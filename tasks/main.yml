@@ -2,12 +2,16 @@
 # tasks file for osquery
 
 - name: Include distribution specific variables
-  include_vars: "{{ ansible_distribution }}.yml"
+  include_vars: "Debian.yml"
+  when: ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
   tags:
     - osquery
-- name: Include version-specific variables for RedHat
-  include_vars: "CentOS-{{ ansible_distribution_version.split('.')[0] }}.yml"
-  when: ansible_os_family == "RedHat"
+
+- name: Include distribution specific variables
+  include_vars: "CentOS.yml"
+  when: ansible_distribution == "RedHat"
+  tags:
+    - osquery
 
 - include: CentOS.yml
   when: ansible_os_family == "RedHat"
@@ -15,7 +19,7 @@
     - osquery
 
 - include: Debian.yml
-  when: ansible_os_family == "Debian"
+  when: ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
   tags:
     - osquery
 
@@ -42,19 +46,22 @@
         - osquery
         - config
 
-    - name: Enable service
-      service: name=osqueryd enabled={{ osquery_service_enable }}
-      tags:
-        - osquery
-        - service
-    - name: Start service
-      service: name=osqueryd state=started
-      when: osquery_service_enable
+    - name: Enable osqueryd service
+      service: 
+        name: osqueryd 
+        enabled: "{{ osquery_service_enable }}"
       tags:
         - osquery
         - service
 
-  when: ansible_os_family == "RedHat" or ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
+    - name: Start osqueryd service
+      service: 
+        name: osqueryd 
+        state: started
+      when: osquery_service_enable
+      tags:
+        - osquery
+        - service
 
 - include: testing.yml
   when: osquery_testing

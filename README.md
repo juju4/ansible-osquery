@@ -1,9 +1,7 @@
-[![Build Status - Master](https://travis-ci.org/juju4/ansible-osquery.svg?branch=master)](https://travis-ci.org/juju4/ansible-osquery)
-[![Build Status - Devel](https://travis-ci.org/juju4/ansible-osquery.svg?branch=devel)](https://travis-ci.org/juju4/ansible-osquery/branches)
-osquery
+GSA.osquery
 =======
 
-[![Build Status](https://travis-ci.org/kbrebanov/ansible-osquery.svg?branch=master)](https://travis-ci.org/kbrebanov/ansible-osquery)
+[![CircleCI](https://circleci.com/gh/GSA/ansible-osquery.svg?style=svg)](https://circleci.com/gh/GSA/ansible-osquery)
 
 Installs osquery
 
@@ -29,7 +27,7 @@ Install osquery
 ```yaml
 - hosts: all
   roles:
-    - kbrebanov.osquery
+    - GSA.osquery
 ```
 
 License
@@ -39,5 +37,8 @@ BSD
 
 Author Information
 ------------------
+General Services Adminstration
 
-Kevin Brebanov
+Forked from: 
+https://github.com/juju4/ansible-osquery
+https://github.com/kbrebanov/ansible-osquery

@@ -1,0 +1,80 @@
+version: 2
+jobs:
+  test-centos-7:
+    working_directory: ~/ansible-osquery
+    machine:
+      ruby:
+        version: 2.4
+      services:
+        - docker
+    steps:
+      - checkout
+      - run:
+          name: Install bundler
+          command: gem install bundler
+      - run:
+          name: Install test-kitchen
+          command: bundle install
+      - run:
+          name: Run test-kitchen
+          command: bundle exec kitchen test default-centos-7
+  test-centos-6:
+    working_directory: ~/ansible-osquery
+    machine:
+      ruby:
+        version: 2.4
+      services:
+        - docker
+    steps:
+      - checkout
+      - run:
+          name: Install bundler
+          command: gem install bundler
+      - run:
+          name: Install test-kitchen
+          command: bundle install
+      - run:
+          name: Run test-kitchen
+          command: bundle exec kitchen test default-centos-6
+  test-ubuntu-16:
+    working_directory: ~/ansible-osquery
+    machine:
+      ruby:
+        version: 2.4
+      services:
+        - docker
+    steps:
+      - checkout
+      - run:
+          name: Install bundler
+          command: gem install bundler
+      - run:
+          name: Install test-kitchen
+          command: bundle install
+      - run:
+          name: Run test-kitchen
+          command: bundle exec kitchen test default-ubuntu-1604
+  test-ubuntu-14:
+    working_directory: ~/ansible-osquery
+    machine:
+      ruby:
+        version: 2.4
+      services:
+        - docker
+    steps:
+      - checkout
+      - run:
+          name: Install bundler
+          command: gem install bundler
+      - run:
+          name: Install test-kitchen
+          command: bundle install
+      - run:
+          name: Run test-kitchen
+          command: bundle exec kitchen test default-ubuntu-1404
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - default

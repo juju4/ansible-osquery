@@ -1,0 +1,47 @@
+---
+driver:
+  name: docker
+  use_sudo: false
+
+transport:
+  name: sftp
+
+provisioner:
+  name: ansible_playbook
+  roles_path: ../ansible-osquery/
+  hosts: all
+  playbook: ./test/test.yml
+  #ansible_verbose: true
+  ansible_verbose: false
+  ansible_verbosity: 3
+  ansible_extra_flags: <%= ENV['ANSIBLE_EXTRA_FLAGS'] %>
+  #require_chef_omnibus: false
+  require_ansible_omnibus: true
+  #require_chef_for_busser: false
+  enable_yum_epel: true
+  ansible_connection: ssh
+
+platforms:
+  - name: ubuntu-16.04
+    driver:
+      image: rndmh3ro/docker-ubuntu1604-ansible:latest
+      platform: ubuntu
+  - name: centos-7
+    driver:
+      image: rndmh3ro/docker-centos7-ansible:latest
+      platform: centos
+    # setting only for systemd operating systems ^
+    driver:
+      config:
+        security.privileged: true
+  - name: ubuntu-14.04
+    driver:
+      image: rndmh3ro/docker-ubuntu1404-ansible:latest
+      platform: ubuntu
+  - name: centos-6
+    driver:
+      image: rndmh3ro/docker-centos6-ansible:latest
+      platform: centos
+
+suites:
+  - name: default

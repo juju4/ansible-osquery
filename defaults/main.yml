@@ -35,23 +35,23 @@ osquery_flags: []
 #osquery_enroll_secret: ""
 
 #osquery_flags:
-#    - { re: '^--enroll_secret_path=.*', l: '--enroll_secret_path=/etc/osquery/osquery_enroll_secret' }
-#    - { re: '^--tls_server_certs=.*', l: '--tls_server_certs=/etc/osquery/kolide.crt' }
-#    - { re: '^--tls_hostname=.*', l: '--tls_hostname=acme.kolide.co' }
-#    - { re: '^--host_identifier=.*', l: '--host_identifier=hostname' }
-#    - { re: '^--enroll_tls_endpoint=.*', l: '--enroll_tls_endpoint=/api/v1/osquery/enroll' }
-#    - { re: '^--config_plugin=.*', l: '--config_plugin=tls' }
-#    - { re: '^--config_tls_endpoint=.*', l: '--config_tls_endpoint=/api/v1/osquery/config' }
-#    - { re: '^--config_tls_refresh=.*', l: '--config_tls_refresh=10' }
-#    - { re: '^--disable_distributed=.*', l: '--disable_distributed=false' }
-#    - { re: '^--distributed_plugin=.*', l: '--distributed_plugin=tls' }
-#    - { re: '^--distributed_interval=.*', l: '--distributed_interval=10' }
-#    - { re: '^--distributed_tls_max_attempts=.*', l: '--distributed_tls_max_attempts=3' }
-#    - { re: '^--distributed_tls_read_endpoint=.*', l: '--distributed_tls_read_endpoint=/api/v1/osquery/distributed/read' }
-#    - { re: '^--distributed_tls_write_endpoint=.*', l: '--distributed_tls_write_endpoint=/api/v1/osquery/distributed/write' }
-#    - { re: '^--logger_plugin=.*', l: '--logger_plugin=tls' }
-#    - { re: '^--logger_tls_endpoint=.*', l: '--logger_tls_endpoint=/api/v1/osquery/log' }
-#    - { re: '^--logger_tls_period=.*', l: '--logger_tls_period=10' }
+#    - "--enroll_secret_path=/etc/osquery/osquery_enroll_secret"
+#    - "--tls_server_certs=/etc/osquery/kolide.crt"
+#    - "--tls_hostname=acme.kolide.co"
+#    - "--host_identifier=hostname"
+#    - "--enroll_tls_endpoint=/api/v1/osquery/enroll"
+#    - "--config_plugin=tls"
+#    - "--config_tls_endpoint=/api/v1/osquery/config"
+#    - "--config_tls_refresh=10"
+#    - "--disable_distributed=false"
+#    - "--distributed_plugin=tls"
+#    - "--distributed_interval=10"
+#    - "--distributed_tls_max_attempts=3"
+#    - "--distributed_tls_read_endpoint=/api/v1/osquery/distributed/read"
+#    - "--distributed_tls_write_endpoint=/api/v1/osquery/distributed/write"
+#    - "--logger_plugin=tls"
+#    - "--logger_tls_endpoint=/api/v1/osquery/log"
+#    - "--logger_tls_period=10"
 
 osquery_fim: true
 osquery_fim_interval: 900

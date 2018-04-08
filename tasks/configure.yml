@@ -37,7 +37,7 @@
       lineinfile:
         path: "/etc/osquery/osquery_enroll_secret"
         regexp: '^'
-        line: ''
+        line: '{{ osquery_enroll_secret }}'
         state: present
         owner: "root"
         group: "root"

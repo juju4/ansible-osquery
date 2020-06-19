@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  author: juju4
+  author: Devo Inc.
   description: Install and configure osquery
   company:
   license: BSD

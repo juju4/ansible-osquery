@@ -1,5 +1,3 @@
-[![Build Status - Master](https://travis-ci.org/juju4/ansible-osquery.svg?branch=master)](https://travis-ci.org/juju4/ansible-osquery)
-[![Build Status - Devel](https://travis-ci.org/juju4/ansible-osquery.svg?branch=devel)](https://travis-ci.org/juju4/ansible-osquery/branches)
 # osquery
 
 Installs and configure osquery
@@ -16,7 +14,6 @@ It was tested on the following versions:
 
 ### Operating systems
 
-Tested on Ubuntu 14.04, 16.04, 18.04, Centos 7. Kitchen test vagrant or lxd, Travis.
 
 ## Example Playbook
 
@@ -26,7 +23,7 @@ For example
 ```
 - host: all
   roles:
-    - juju4.osquery
+    - devoinc.osquery
 ```
 
 Run
@@ -67,26 +64,6 @@ osquery_flags: []
 
 osquery_fim: true
 osquery_fim_interval: 300
-```
-
-## Continuous integration
-
-This role has a travis basic test (for github), more advanced with kitchen and also a Vagrantfile (test/vagrant).
-Default kitchen config (.kitchen.yml) is lxd-based, while (.kitchen.vagrant.yml) is vagrant/virtualbox based.
-
-Once you ensured all necessary roles are present, You can test with:
-```
-$ gem install kitchen-ansible kitchen-lxd_cli kitchen-sync kitchen-vagrant
-$ cd /path/to/roles/juju4.osquery
-$ kitchen verify
-$ kitchen login
-$ KITCHEN_YAML=".kitchen.vagrant.yml" kitchen verify
-```
-or
-```
-$ cd /path/to/roles/juju4.osquery/test/vagrant
-$ vagrant up
-$ vagrant ssh
 ```
 
 ## FAQ

@@ -15,7 +15,6 @@ RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
           (ansible_virtualization_type == "lxc" or ansible_virtualization_type == "docker")
         ) and
       not (ansible_os_family == 'RedHat' and ansible_distribution_major_version|int < 8) %}
-SystemCallFilter=futex mprotect read write open openat close stat fstat lstat lseek mmap munmap brk rt_sigaction rt_sigprocmask rt_sigreturn access alarm socket connect sendto clone execve unlink chmod getrlimit setpriority arch_prctl set_tid_address ioprio_set set_robust_list getcwd readlink fcntl wait4 getdents tgkill mkdir pread64 uname fdatasync madvise symlink fadvise64 readahead ioctl fallocate rename fsync socketpair sysinfo getsockname ftruncate inotify_init setsockopt flock inotify_add_watch poll bind shutdown statfs newfstatat _sysctl getuid getgid getpid geteuid getegid getppid prctl gettid nanosleep
 {% if (ansible_os_family == 'RedHat' and ansible_distribution_major_version|int >= 8) or (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 18) %}
 SystemCallFilter=~@debug @mount @cpu-emulation @obsolete @privileged
 {% endif %}

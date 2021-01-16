@@ -15,7 +15,6 @@
     dateformat {{ syslogclient_logrotate_datformat }}
 {% endif%}
     missingok
-    notifempty
     compress
     delaycompress
     create 640 {{ syslog_user | default('root') }} adm

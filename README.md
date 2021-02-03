@@ -1,5 +1,5 @@
-[![Build Status - Master](https://travis-ci.com/juju4/ansible-osquery.svg?branch=master)](https://travis-ci.com/juju4/ansible-osquery)
-[![Build Status - Devel](https://travis-ci.com/juju4/ansible-osquery.svg?branch=devel)](https://travis-ci.com/juju4/ansible-osquery/branches)
+[![Build Status - Master](https://travis-ci.com/v0rts/ansible-osquery.svg?branch=master)](https://travis-ci.com/v0rts/ansible-osquery)
+[![Build Status - Devel](https://travis-ci.com/v0rts/ansible-osquery.svg?branch=devel)](https://travis-ci.com/v0rts/ansible-osquery/branches)
 # osquery
 
 Installs and configure osquery
@@ -26,7 +26,7 @@ For example
 ```
 - host: all
   roles:
-    - juju4.osquery
+    - v0rts.osquery
 ```
 
 Run
@@ -77,14 +77,14 @@ Default kitchen config (.kitchen.yml) is lxd-based, while (.kitchen.vagrant.yml)
 Once you ensured all necessary roles are present, You can test with:
 ```
 $ gem install kitchen-ansible kitchen-lxd_cli kitchen-sync kitchen-vagrant
-$ cd /path/to/roles/juju4.osquery
+$ cd /path/to/roles/v0rts.osquery
 $ kitchen verify
 $ kitchen login
 $ KITCHEN_YAML=".kitchen.vagrant.yml" kitchen verify
 ```
 or
 ```
-$ cd /path/to/roles/juju4.osquery/test/vagrant
+$ cd /path/to/roles/v0rts.osquery/test/vagrant
 $ vagrant up
 $ vagrant ssh
 ```
@@ -112,4 +112,6 @@ BSD 2-clause
 
 ## References
 
+* This role maintained/updated by v0rts
+* Updated role made by JuJu4
 * Original role made by Kevin Brebanov.

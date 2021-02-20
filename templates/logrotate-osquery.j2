@@ -21,7 +21,7 @@
     sharedscripts
 {% if osquery_reporting %}
     prerotate
-        test ! -x /usr/local/scripts/{{ osquery_reporting_template | basename }} || {% if ansible_os_family == "Debian" %}sudo -u {{ syslog_user }} {% endif %}/usr/local/scripts/{{ osquery_reporting_template | basename }} > {{ osquery_reporting_dest }}/osquery-report-`date +%Y%m%d` 2>&1
+        test ! -x /usr/local/scripts/{{ osquery_reporting_template | basename }} || {% if ansible_os_family == "Debian" %}sudo -u {{ syslog_user }} {% endif %}/usr/local/scripts/{{ osquery_reporting_template | basename }} 2>&1 | {% if ansible_os_family == "Debian" %}sudo -u {{ syslog_user }} {% endif %}tee {{ osquery_reporting_dest }}/osquery-report-`date +%Y%m%d` >/dev/null
     endscript
 {% endif %}
     postrotate

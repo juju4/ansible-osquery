@@ -21,6 +21,10 @@
         that: ps.stdout
       ignore_errors: true
 
+    - name: list /var/log/osquery
+      command: ls -lA /var/log/osquery
+      changed_when: false
+
     - name: Fetch content of /var/log/osquery/osqueryd.INFO
       slurp:
         src: /var/log/osquery/osqueryd.INFO
@@ -30,12 +34,18 @@
         that: >
           "'Log line format:' in info['content'] | b64decode"
 
+    - name: Check if /var/log/osquery/osqueryd.WARNING exists
+      stat:
+        path: /var/log/osquery/osqueryd.WARNING
+      register: warnfile
     - name: Fetch content of /var/log/osquery/osqueryd.WARNING
       slurp:
         src: /var/log/osquery/osqueryd.WARNING
       register: warn
+      when: warnfile.stat.exists
     - name: Validate /var/log/osquery/osqueryd.WARNING
       assert:
         that: >
           "'Log line format:' in warn['content'] | b64decode and
           'kernel: Cannot access /dev/osquery' not in warn['content'] | b64decode"
+      when: warnfile.stat.exists

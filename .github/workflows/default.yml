@@ -39,6 +39,8 @@ jobs:
           pip install molecule[docker] ansible-lint flake8 testinfra ansible
           ansible --version
           ansible-lint --version
+          mkdir -p $HOME/.ansible/roles && ln -s $GITHUB_WORKSPACE/juju4.osquery $HOME/.ansible/roles/
+          mkdir -p $HOME/.cache/molecule/juju4.osquery/default && ln -s $HOME/.ansible/roles $HOME/.cache/molecule/juju4.osquery/default/roles
       - name: Environment
         run: |
           pwd

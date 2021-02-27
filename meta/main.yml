@@ -1,5 +1,6 @@
 ---
 galaxy_info:
+  role_name: osquery
   author: juju4
   description: Install and configure osquery
   company:

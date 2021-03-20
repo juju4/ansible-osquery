@@ -24,7 +24,8 @@
       notify:
         - restart osquery
         - restart osquery - docker
-    - debug: var=osquery_packs
+    - name: Debug | osquery_packs
+      debug: var=osquery_packs
     - name: configure osquery
       template:
         src: "{{ osquery_template }}"
@@ -136,7 +137,8 @@
   set_fact:
     rsyslog_v: "{{ ansible_facts.packages['rsyslog'][0]['version'] }}"
 
-- debug: var=rsyslog_v verbosity=1
+- name: Debug | rsyslog version
+  debug: var=rsyslog_v verbosity=1
 
 # https://osquery.readthedocs.io/en/stable/deployment/syslog/
 - block:

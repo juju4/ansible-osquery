@@ -90,7 +90,8 @@
       when: osquery_reporting
   when: ansible_os_family == "RedHat" or ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
 
-- meta: flush_handlers
+- name: Flush handlers
+  meta: flush_handlers
 
 - block:
     - include: testing.yml

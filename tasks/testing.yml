@@ -11,7 +11,8 @@
         - /var/tmp/fim-testing-b
       notify:
         - restart osquery
-    - meta: flush_handlers
+    - name: Flush handlers
+      meta: flush_handlers
   when: osquery_testing_fimfiles or osquery_testing_fim_load
 
 - name: pause a bit
@@ -25,7 +26,8 @@
       register: systemctl
       args:
         warn: false
-    - debug: var=systemctl.stdout_lines
+    - name: Debug | systemctl output
+      debug: var=systemctl.stdout_lines
   when: ansible_service_mgr == "systemd"
 - block:
     - name: service | check service status
@@ -34,7 +36,8 @@
         warn: false
       changed_when: false
       register: service
-    - debug: var=service.stdout_lines
+    - name: Debug | service output
+      debug: var=service.stdout_lines
   when: ansible_service_mgr == "service"
 
 - block:

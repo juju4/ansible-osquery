@@ -29,7 +29,7 @@
 
 # FIXME!
 - name: Generate osquery policy file
-  command: "{{ item }}"
+  command: "{{ item }}"  # noqa no-handler
   args:
     chdir: /etc/osquery
   with_items:

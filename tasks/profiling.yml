@@ -27,4 +27,5 @@
     chdir: /root/osquery
   changed_when: false
   register: perf
-- debug: var=perf.stdout_lines
+- name: Debug | perf output
+  debug: var=perf.stdout_lines

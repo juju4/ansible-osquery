@@ -11,4 +11,5 @@
     osquery_enroll_secret: "{{ fleetsecret.stdout | regex_findall(' secret: (.*)$') | first }}"
   no_log: "{{ osquery_nolog | default(true) }}"
 
-- debug: var=osquery_enroll_secret verbosity=2
+- name: Debug | osquery_enroll_secret
+  debug: var=osquery_enroll_secret verbosity=2

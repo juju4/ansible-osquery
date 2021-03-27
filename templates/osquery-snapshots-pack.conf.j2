@@ -87,13 +87,6 @@
       "interval" : "{{ osquery_snapshot_interval }}",
       "snapshot": true
     },
-    "kernel_panics": {
-      "query" : "select * from kernel_panics;",
-      "platform" : "linux",
-      "description" : "System kernel panic logs.",
-      "interval" : "{{ osquery_snapshot_interval }}",
-      "snapshot": true
-    },
     "known_hosts": {
       "query" : "select known_hosts.* from users join known_hosts using (uid);",
       "description" : "line-delimited known_hosts table",

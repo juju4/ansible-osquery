@@ -2,25 +2,26 @@
 # Add delay at restart for rocksdb backend
 RestartSec=10
 # Hardened options for osquery systemd
-NoNewPrivileges=yes
-PrivateTmp=true
-ProtectHome=read-only
-ProtectSystem=full
+# Warning! Test to your context, can suppress (or buffer?) some capacities like fim inotify
+#NoNewPrivileges=yes
+#PrivateTmp=true
+#ProtectHome=read-only
+#ProtectSystem=full
 {% if (ansible_os_family == 'RedHat' and ansible_distribution_major_version|int >= 7) or (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 18) %}
-ProtectKernelTunables=true
-RestrictRealtime=true
+#ProtectKernelTunables=true
+#RestrictRealtime=true
 {% endif %}
-RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+#RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
 {% if not (ansible_virtualization_type is defined and
           (ansible_virtualization_type == "lxc" or ansible_virtualization_type == "docker")
         ) and
       not (ansible_os_family == 'RedHat' and ansible_distribution_major_version|int < 8) %}
 {% if (ansible_os_family == 'RedHat' and ansible_distribution_major_version|int >= 8) or (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 18) %}
-SystemCallFilter=~@debug @mount @cpu-emulation @obsolete @privileged
+#SystemCallFilter=~@debug @mount @cpu-emulation @obsolete @privileged
 {% endif %}
 {% endif %}
 {% if osquery_cgroups_restriction_enable|bool %}
-CPUShares={{ osquery_cgroups_cpushares | default('100') }}
+CPUShares={{ osquery_cgroups_cpushares | default('1024') }}
 CPUQuota={{ osquery_cgroups_cpuquota | default('10%') }}
 MemoryLimit={{ osquery_cgroups_memorylimit | default('1G') }}
 {% endif %}

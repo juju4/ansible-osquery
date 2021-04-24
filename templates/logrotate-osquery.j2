@@ -26,7 +26,7 @@
 }
 
 {% if osquery_syslog_target is defined and osquery_syslog_target != '' and '/var/log/' in osquery_syslog_target %}
-{{ osquery_syslog_target }}{% if not (osquery_syslog_target2 is defined and osquery_syslog_target2 != '' and '/var/log/' in osquery_syslog_target2) %} {{% endif %}
+{{ osquery_syslog_target }}{% if not (osquery_syslog_target2 is defined and osquery_syslog_target2 != '' and '/var/log/' in osquery_syslog_target2) %} {{ '{' }}{% endif %}
 {% endif %}
 {% if osquery_syslog_target2 is defined and osquery_syslog_target2 != '' and '/var/log/' in osquery_syslog_target2 %}
 {{ osquery_syslog_target2 }} {

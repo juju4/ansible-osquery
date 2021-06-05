@@ -1,5 +1,3 @@
-[![Build Status - Master](https://travis-ci.com/juju4/ansible-osquery.svg?branch=master)](https://travis-ci.com/juju4/ansible-osquery)
-[![Build Status - Devel](https://travis-ci.com/juju4/ansible-osquery.svg?branch=devel)](https://travis-ci.com/juju4/ansible-osquery/branches)
 # osquery
 
 Installs and configure osquery

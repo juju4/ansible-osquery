@@ -139,3 +139,10 @@
       changed_when: false
       register: log
   when: osquery_testing_fim_load
+
+- name: Get eicar file to check yara rules
+  get_url:
+    url: http://www.eicar.org/download/eicar.com
+    dest: /root/test-fim-yara-eicar.com
+    mode: '0644'
+  when: osquery_testing_yara|bool

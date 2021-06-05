@@ -96,7 +96,38 @@
 {% endif %}
   },
 
-{% if osquery_fim %}
+{% if osquery_yara|bool %}
+  "yara": {
+    "signatures": {
+{% for item in osquery_yara_signatures %}
+      "{{ item.name }}": [
+{% for entry in item.list %}
+        "{{ entry }}"{% if not loop.last %},{% endif %}
+
+{% endfor %}
+      ]{% if not loop.last %},{% endif %}
+
+{% endfor %}
+    },
+    "file_paths": {
+      // Each key is a key from file_paths
+      // The value is a list of signature groups to run when an event fires
+      // These will be watched for and scanned when the event framework
+      // fire off an event to yara_events table
+{% for item in osquery_yara_filepaths %}
+      "{{ item.name }}": [
+{% for entry in item.list %}
+        "{{ entry }}"{% if not loop.last %},{% endif %}
+
+{% endfor %}
+      ]{% if not loop.last %},{% endif %}
+
+{% endfor %}
+    }
+  },
+
+{% endif %}
+{% if osquery_fim|bool or osquery_yara|bool %}
   "file_paths": {
 {% for item in osquery_fim_filepaths %}
     "{{ item.name }}": [

@@ -26,6 +26,10 @@
         - restart osquery - docker
     - name: Debug | osquery_packs
       debug: var=osquery_packs
+
+    - import_tasks: yara.yml
+      when: osquery_yara
+
     - name: configure osquery
       template:
         src: "{{ osquery_template }}"

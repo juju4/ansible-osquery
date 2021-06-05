@@ -120,6 +120,36 @@ osquery_fim_excludepaths:
   - name: tmp
     list:
       - /tmp/too_many_events/
+
+osquery_yara: false
+osquery_yara_dir: /var/osquery/yara
+# list of yara signatures files to upload from orchestrator
+osquery_yara_files: []
+# list of yara signatures files to download. below are just examples
+osquery_yara_files_dl:
+  - https://raw.githubusercontent.com/airbnb/binaryalert/master/rules/public/eicar.yara
+  - https://raw.githubusercontent.com/airbnb/binaryalert/master/rules/public/malware/multi/malware_multi_pupy_rat.yara
+  - https://github.com/jeFF0Falltrades/YARA-Signatures/raw/master/Behavioral/steganography.yar
+  - https://github.com/Yara-Rules/rules/raw/devel/Packers/packer.yar
+# osquery yara config
+osquery_yara_signatures:
+  - name: sig_group_1
+    list:
+      - /var/osquery/yara/eicar.yara
+      - /var/osquery/yara/packer.yar
+  - name: sig_group_2
+    list:
+      - /var/osquery/yara/malware_multi_pupy_rat.yara
+      - /var/osquery/yara/steganography.yar
+osquery_yara_filepaths:
+  - name: bin
+    list:
+      - sig_group_1
+  - name: tmp
+    list:
+      - sig_group_1
+      - sig_group_2
+
 osquery_rsyslog: false
 ## conflict with auditd. choose one.
 ## https://osquery.readthedocs.io/en/stable/deployment/process-auditing/
@@ -179,6 +209,7 @@ osquery_testing_fim_files:
   - /lib/fim-testing3
   - /usr/bin/fim-testing4
   - /usr/bin/.fim-testing5
+osquery_testing_yara: false
 ## profiling?
 osquery_profiling: false
 ## full config might be too long for travis (max 50min)

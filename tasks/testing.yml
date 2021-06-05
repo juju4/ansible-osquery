@@ -118,7 +118,7 @@
         creates: /tmp/too_many_events/testing-aa
     - name: clean up
       shell: find /tmp/too_many_events/ -name 'testing-*' -exec rm {} \;
-      ignore_errors: true
+      failed_when: false
       when: osquery_testing_cleanup
     - name: creation of many small files
       command: "split -b {{ osquery_testing_fim_load_smaller }} /etc/testing-big-file testing-"
@@ -127,7 +127,7 @@
         creates: /etc/testing-aa
     - name: clean up
       shell: find /etc/ -name 'testing-*' -exec rm {} \;
-      ignore_errors: true
+      failed_when: false
       when: osquery_testing_cleanup
     # more diverse load? openssl speed, stress...
     - name: retrieve log results

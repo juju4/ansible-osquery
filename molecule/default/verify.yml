@@ -19,7 +19,7 @@
     - name: Validate ps output
       assert:
         that: ps.stdout
-      ignore_errors: true
+      failed_when: false
 
     - name: list /var/log/osquery
       command: ls -lA /var/log/osquery

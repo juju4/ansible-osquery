@@ -37,7 +37,7 @@
     - make -f /usr/share/selinux/devel/Makefile myosquery.pp
     - semodule -i myosquery.pp
   when: te is changed
-  ignore_errors: true
+  failed_when: false
 
 # `sepolicy generate -n osquery --init /usr/bin/osqueryd`     = OK/base
 # Refine policy with `audit2allow -i /var/log/audit/audit.log -M osquery`

@@ -22,6 +22,7 @@ osquery_upload_packs:
   - osquery-custom-pack
   - osquery-snapshots-pack
   - osquery-monitoring2-pack
+  - "incident-response"
 osquery_packs:
   - "osquery-monitoring"
   - "incident-response"

@@ -101,6 +101,8 @@
   when: has_osquery.stat.exists
 
 - block:
+    - name: Debug | ansible_virtualization_type
+      debug: var=ansible_virtualization_type verbosity=1
     - name: review inotify sysctl settings for osquery
       sysctl:
         name: "{{ item.n }}"

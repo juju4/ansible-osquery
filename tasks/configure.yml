@@ -5,7 +5,7 @@
 
 - name: check if osquery is present
   stat: path=/etc/osquery
-  register: hasOsquery
+  register: has_osquery
 - block:
     - name: ensure directories exist
       file:
@@ -98,7 +98,7 @@
     - name: Set fact for monit
       set_fact:
         monit_osqueryd: true
-  when: hasOsquery.stat.exists
+  when: has_osquery.stat.exists
 
 - block:
     - name: review inotify sysctl settings for osquery

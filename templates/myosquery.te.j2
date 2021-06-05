@@ -398,18 +398,18 @@ allow osquery_t screen_exec_t:file getattr;
 allow osquery_t scsi_generic_device_t:chr_file getattr;
 allow osquery_t self:capability { dac_override fsetid sys_rawio };
 
-#!!!! The file '/var/osquery/osquery.em' is mislabeled on your system.  
+#!!!! The file '/var/osquery/osquery.em' is mislabeled on your system.
 #!!!! Fix with $ restorecon -R -v /var/osquery/osquery.em
 #!!!! This avc can be allowed using the boolean 'daemons_enable_cluster_mode'
 allow osquery_t self:unix_stream_socket connectto;
 allow osquery_t selinux_config_t:dir read;
 allow osquery_t semanage_exec_t:file getattr;
 
-#!!!! The file '/etc/selinux/targeted/tmp' is mislabeled on your system.  
+#!!!! The file '/etc/selinux/targeted/tmp' is mislabeled on your system.
 #!!!! Fix with $ restorecon -R -v /etc/selinux/targeted/tmp
 allow osquery_t semanage_store_t:dir { getattr open read };
 
-#!!!! The file '/etc/selinux/targeted/tmp/modules/100/abrt/cil' is mislabeled on your system.  
+#!!!! The file '/etc/selinux/targeted/tmp/modules/100/abrt/cil' is mislabeled on your system.
 #!!!! Fix with $ restorecon -R -v /etc/selinux/targeted/tmp/modules/100/abrt/cil
 allow osquery_t semanage_store_t:file { getattr open read };
 allow osquery_t sendmail_exec_t:file getattr;

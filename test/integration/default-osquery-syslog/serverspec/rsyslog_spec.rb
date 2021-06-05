@@ -44,4 +44,3 @@ end
 describe file('/var/log/messages'), :if => os[:family] == 'redhat' do
   it { should be_file }
 end
-

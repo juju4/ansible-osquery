@@ -13,7 +13,7 @@ set :backend, :exec
 describe service('kolide') do
   it { should be_enabled }
   it { should be_running }
-end  
+end
 describe process("fleet") do
   its(:user) { should eq "_kolide" }
   its(:args) { should match /--config \/etc\/kolide\/kolide.yml/ }

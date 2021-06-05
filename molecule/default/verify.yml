@@ -49,3 +49,10 @@
           "'Log line format:' in warn['content'] | b64decode and
           'kernel: Cannot access /dev/osquery' not in warn['content'] | b64decode"
       when: warnfile.stat.exists
+
+    - name: Fetch content of /var/log/osquery/osqueryd.results.log
+      slurp:
+        src: /var/log/osquery/osqueryd.results.log
+      register: log
+    - name: Display /var/log/osquery/osqueryd.results.log
+      debug: msg="{{ log['content'] | b64decode }}"

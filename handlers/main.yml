@@ -13,32 +13,32 @@
     daemon_reload: yes
   when: >
     not (ansible_virtualization_type is defined and
-          (ansible_virtualization_type == "docker" or ansible_virtualization_type == "VirtualPC")
+          (ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd")
         )
 
 - name: restart osquery
   shell: "systemctl stop osqueryd; sleep 5; systemctl start osqueryd"  # noqa 303
   when: >
     not (ansible_virtualization_type is defined and
-          (ansible_virtualization_type == "docker" or ansible_virtualization_type == "VirtualPC")
+          (ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd")
         )
 
 - name: restart osquery - docker
   service: name=osqueryd state=restarted sleep=5 use=service
   when: >
     (ansible_virtualization_type is defined and
-          (ansible_virtualization_type == "docker" or ansible_virtualization_type == "VirtualPC")
+          (ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd")
     )
 
 - name: restart rsyslog
   service: name=rsyslog state=restarted
   when: >
     not (ansible_virtualization_type is defined and
-          (ansible_virtualization_type == "docker" or ansible_virtualization_type == "VirtualPC")
+          (ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd")
         )
 
 - name: restart rsyslog - docker
   service: name=rsyslog state=restarted use=service
   when:
-    - (ansible_virtualization_type is defined and (ansible_virtualization_type == "docker" or ansible_virtualization_type == "VirtualPC"))
+    - (ansible_virtualization_type is defined and (ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd"))
     - not (ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 7)

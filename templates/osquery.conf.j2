@@ -75,7 +75,8 @@
 {% if osquery_fim %}
     "fim" : {
 //      "query": "select target_path, category, time, action from file_events;",
-      "query": "select * from file_events;",
+//      "query": "select * from file_events;",
+      "query": "select f.action,f.target_path,f.mode,f.size,f.category,f.time,f.atime,f.ctime,f.mtime,f.md5,f.sha256,u.uid,u.username from users u join file_events f using (uid);",
       "removed": false,
       "interval": {% if osquery_testing_fim_load or osquery_testing_fimfiles %}1{% else %}{{ osquery_fim_interval }}{% endif %}
 

@@ -3,6 +3,10 @@
 
 - name: reload osqueryd apparmor profile
   shell: cat /etc/apparmor.d/usr.bin.osqueryd | sudo apparmor_parser -r
+  when: >
+    not (ansible_virtualization_type is defined and
+          (ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd")
+        )
 
 - name: reload systemd
   systemd:

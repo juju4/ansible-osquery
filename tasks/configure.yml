@@ -93,7 +93,7 @@
       service: name=osqueryd state=started enabled=yes
       when: >
         not (ansible_virtualization_type is defined and
-          (ansible_virtualization_type == "docker" or ansible_virtualization_type == "VirtualPC")
+          (ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd")
         )
     - name: Set fact for monit
       set_fact:
@@ -129,7 +129,11 @@
 - block:
     - name: ensure auditd service is disabled and masked
       service: name=auditd masked=yes
-      when: not (ansible_virtualization_type is defined and ansible_virtualization_type == "docker")
+      when: >
+        not (ansible_virtualization_type is defined and (
+          ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd"
+          )
+        )
     - name: ensure auditd is present
       package:
         name: "{{ _osquery_auditd_pkg }}"
@@ -168,7 +172,9 @@
 - include: selinux-end.yml
   when: >
     not (ansible_virtualization_type is defined and
-          (ansible_virtualization_type == "lxc" or ansible_virtualization_type == "docker")
+          (ansible_virtualization_type == "lxc" or ansible_virtualization_type == "docker" or
+          ansible_virtualization_type == "containerd"
+          )
         ) and
     ansible_os_family == "RedHat"
 

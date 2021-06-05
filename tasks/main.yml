@@ -64,7 +64,7 @@
       when: >
             osquery_service_enable|bool and
             not (ansible_virtualization_type is defined and
-                  (ansible_virtualization_type == "VirtualPC" or ansible_virtualization_type == "docker")
+                  (ansible_virtualization_type == "containerd" or ansible_virtualization_type == "docker")
                 )
     - block:
         - name: Docker | Check if osqueryd process
@@ -81,7 +81,7 @@
       when: >
             osquery_service_enable|bool and
             (ansible_virtualization_type is defined and
-                  (ansible_virtualization_type == "VirtualPC" or ansible_virtualization_type == "docker")
+                  (ansible_virtualization_type == "containerd" or ansible_virtualization_type == "docker")
                 )
 
     - include: symlink-loop.yml

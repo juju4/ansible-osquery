@@ -1,61 +1,64 @@
 #!/bin/sh
 
-date=`date +%Y%m%d`
+export export PATH=/usr/bin:/bin
+umask 077
+
+date=$(date +%Y%m%d)
 f=/var/log/osquery/osqueryd.results.log
 f2=/var/log/osquery/osqueryd.snapshots.log
 echo
 echo
-echo "      OSQUERY DAILY REPORT $date for $f"
+echo "      OSQUERY DAILY REPORT ${date} for ${f}"
 echo
 echo
 
 
 echo "** Queries name"
-jq -r '.name' $f | sort | uniq -c | sort -nr
+jq -r '.name' "${f}" | sort | uniq -c | sort -nr
 echo
 echo
 
 echo "** Process"
-jq -r 'select(.name == "pack_osquery-custom-pack_processes") | .columns.name + ";" + .columns.path + ";" + .columns.cmdline + ";" + .columns.pcmdline' $f  | sort | uniq -c | sort -nr
+jq -r 'select(.name == "pack_osquery-custom-pack_processes") | .columns.name + ";" + .columns.path + ";" + .columns.cmdline + ";" + .columns.pcmdline' "${f}"  | sort | uniq -c | sort -nr
 echo "** Shell history"
-jq -r 'select(.name == "pack_incident-response_shell_history" and .action == "added") | .columns.username + ": " + .columns.command' $f | sort | uniq -c | sort -nr | head
-jq -r 'select(.name == "pack_incident-response_shell_history" and .action == "added") | .columns.username + ": " + .columns.command' $f | sort | uniq -c | sort -nr | tail
+jq -r 'select(.name == "pack_incident-response_shell_history" and .action == "added") | .columns.username + ": " + .columns.command' "${f}" | sort | uniq -c | sort -nr | head
+jq -r 'select(.name == "pack_incident-response_shell_history" and .action == "added") | .columns.username + ": " + .columns.command' "${f}" | sort | uniq -c | sort -nr | tail
 echo "** Process Memory"
-jq -r 'select(.name == "pack_incident-response_process_memory") | .columns.path + " " + .columns.permissions' $f | sort | uniq -c | sort -nr | head -20
+jq -r 'select(.name == "pack_incident-response_process_memory") | .columns.path + " " + .columns.permissions' "${f}" | sort | uniq -c | sort -nr | head -20
 echo "** Process Memory wx"
-jq -r 'select(.name == "pack_incident-response_process_memory" and (.columns.permissions | test("wx"))) | .columns.path + ": " + .columns.permissions' $f | sort | uniq -c | sort -nr | head -20
+jq -r 'select(.name == "pack_incident-response_process_memory" and (.columns.permissions | test("wx"))) | .columns.path + ": " + .columns.permissions' "${f}" | sort | uniq -c | sort -nr | head -20
 echo "** Listening Ports"
-jq -r 'select(.name == "pack_incident-response_listening_ports") | .columns.path + " " + .columns.port + " " +.columns.protocol' $f | sort | uniq -c | sort -nr
+jq -r 'select(.name == "pack_incident-response_listening_ports") | .columns.path + " " + .columns.port + " " +.columns.protocol' "${f}" | sort | uniq -c | sort -nr
 echo "** Last"
-jq -r 'select(.name == "pack_incident-response_last") | .columns.username + " " + .columns.host + " " + .columns.tty + " " + .columns.type' $f | sort | uniq -c | sort -nr
+jq -r 'select(.name == "pack_incident-response_last") | .columns.username + " " + .columns.host + " " + .columns.tty + " " + .columns.type' "${f}" | sort | uniq -c | sort -nr
 echo "** Kernel modules"
-jq -r 'select(.name == "pack_vuln-management_kernel_modules") | .action' $f | sort | uniq -c | sort -nr
+jq -r 'select(.name == "pack_vuln-management_kernel_modules") | .action' "${f}" | sort | uniq -c | sort -nr
 echo "** Mounts"
-jq -r 'select(.name == "pack_incident-response_mounts") | .action' $f | sort | uniq -c | sort -nr
+jq -r 'select(.name == "pack_incident-response_mounts") | .action' "${f}" | sort | uniq -c | sort -nr
 echo "** Fileless process"
-jq -r 'select(.name == "pack_osquery-custom-pack_fileless_process") | .columns.path' $f | sort | uniq -c | sort -nr
+jq -r 'select(.name == "pack_osquery-custom-pack_fileless_process") | .columns.path' "${f}" | sort | uniq -c | sort -nr
 echo "** Iptables"
-jq -r 'select(.name == "pack_incident-response_iptables") | .action + " " + .columns.chain + " " + .columns.policy' $f | sort | uniq -c | sort -nr | head -20
+jq -r 'select(.name == "pack_incident-response_iptables") | .action + " " + .columns.chain + " " + .columns.policy' "${f}" | sort | uniq -c | sort -nr | head -20
 echo
 echo
 
 echo "** FIM Categories"
-jq -r 'select(.name == "fim") | .columns.category' $f | sort | uniq -c | sort -nr
+jq -r 'select(.name == "fim") | .columns.category' "${f}" | sort | uniq -c | sort -nr
 echo "** FIM Uid"
-jq -r 'select(.name == "fim") | .columns.uid' $f | sort | uniq -c | sort -nr
+jq -r 'select(.name == "fim") | .columns.uid' "${f}" | sort | uniq -c | sort -nr
 echo "** FIM Action"
-jq -r 'select(.name == "fim") | .columns.action' $f | sort | uniq -c | sort -nr
+jq -r 'select(.name == "fim") | .columns.action' "${f}" | sort | uniq -c | sort -nr
 echo "** FIM Target path and action"
-jq -r 'select(.name == "fim") | .columns.target_path + " " + .columns.action' $f | sort | uniq -c | sort -nr
+jq -r 'select(.name == "fim") | .columns.target_path + " " + .columns.action' "${f}" | sort | uniq -c | sort -nr
 echo
 echo
 
 echo "** Snapshots Queries name"
-jq -r '.name' $f2 | sort | uniq -c | sort -nr
+jq -r '.name' "$f2" | sort | uniq -c | sort -nr
 echo "** Snapshots system controls"
-jq -r 'select(.name == "pack_osquery-snapshots-pack_system_controls") | .columns.name' $f2 | sort | uniq -c | sort -nr
+jq -r 'select(.name == "pack_osquery-snapshots-pack_system_controls") | .columns.name' "$f2" | sort | uniq -c | sort -nr
 echo "** /etc/hosts"
-jq -r 'select(.name == "pack_osquery-snapshots-pack_etc_hosts") | .columns.address + " " + .columns.hostnames' $f2 | sort | uniq -c | sort -nr
+jq -r 'select(.name == "pack_osquery-snapshots-pack_etc_hosts") | .columns.address + " " + .columns.hostnames' "$f2" | sort | uniq -c | sort -nr
 echo
 echo
 

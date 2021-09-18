@@ -52,7 +52,7 @@ sepolicy manpage -p . -d osquery_t
 # Fixing the file context on /var/log/osquery
 /sbin/restorecon -F -R -v /var/log/osquery
 /sbin/restorecon -F -R -v /etc/osquery
-/sbin/restorecon -F -R -v /usr/share/osquery/packs
+/sbin/restorecon -F -R -v /opt/osquery/share/osquery/packs
 
 
 # Generate a rpm package for the newly generated policy

@@ -17,7 +17,7 @@
     - name: push extra osquery packs file
       template:
         src: "{{ item }}.conf.j2"
-        dest: "/usr/share/osquery/packs/{{ item | basename }}.conf"
+        dest: "/opt/osquery/share/osquery/packs/{{ item | basename }}.conf"
         mode: '0644'
         backup: "{{ osquery_backup | default(false) }}"
       with_items: "{{ osquery_upload_packs }}"

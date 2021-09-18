@@ -167,14 +167,14 @@
   // There are several 'default' packs installed with 'make install' or via
   // packages and/or Homebrew.
   //
-  // Linux:        /usr/share/osquery/packs
-  // OS X:         /var/osquery/packs
+  // Linux:        /opt/osquery/share/osquery/packs
+  // OS X:         /opt/osquery/share/osquery/packs
   // Homebrew:     /usr/local/share/osquery/packs
   // make install: {PREFIX}/share/osquery/packs
   //
   "packs": {
 {% for item in osquery_packs %}
-    "{{ item }}": "/usr/share/osquery/packs/{{ item }}.conf"{% if not loop.last %},{% endif %}
+    "{{ item }}": "/opt/osquery/share/osquery/packs/{{ item }}.conf"{% if not loop.last %},{% endif %}
 
 {% endfor %}
   }

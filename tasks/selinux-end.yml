@@ -13,7 +13,7 @@
         - /usr/lib/systemd/system/osqueryd.service
         - /var/log/osquery
         - /etc/osquery
-        - /usr/share/osquery/packs
+        - /opt/osquery/share/osquery/packs
     - name: RedHat | Create restorecon marker
       file:
         path: /root/.ansible_osquery_restorecon

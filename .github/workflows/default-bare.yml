@@ -75,22 +75,22 @@ jobs:
         continue-on-error: true
       - name: After script - osquery ERROR/WARNING/INFO
         run: |
-          cat /var/log/osquery/osqueryd.{ERROR,WARNING,INFO}
+          sudo cat /var/log/osquery/osqueryd.{ERROR,WARNING,INFO}
         if: ${{ always() }}
         continue-on-error: true
       - name: After script - osquery results logs
         run: |
-          tail -100 /var/log/osquery/osqueryd.results.log
+          sudo tail -100 /var/log/osquery/osqueryd.results.log
         if: ${{ always() }}
         continue-on-error: true
       - name: After script - osquery results logs via jq
         run: |
-          /usr/local/scripts/osquery_report.sh
-          cat /var/tmp/osquery-report-*
+          sudo /usr/local/scripts/osquery_report.sh
+          sudo cat /var/tmp/osquery-report-*
         if: ${{ always() }}
         continue-on-error: true
       - name: After script - resulting systemd config
         run: |
-          find /etc/systemd/system/osquery.service.d/ -type f -exec cat {} \;
+          find /etc/systemd/system/osqueryd.service.d/ -type f -exec cat {} \;
         if: ${{ always() }}
         continue-on-error: true

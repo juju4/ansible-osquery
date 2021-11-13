@@ -1,0 +1,98 @@
+---
+
+- name: Converge
+  hosts: all
+  environment:
+    http_proxy: "{{ lookup('env', 'http_proxy') }}"
+    https_proxy: "{{ lookup('env', 'https_proxy') }}"
+    no_proxy: "{{ lookup('env', 'no_proxy') }}"
+  remote_user: root
+  vars:
+    - osquery_testing: true
+    - osquery_profiling: false
+    - osquery_testing_fim_load: false
+    - osquery_testing_fimfiles: true
+    - osquery_fim_filepaths:
+        - name: homes_sshdir
+          list:
+            - "/root/.ssh/%%"
+            - "/home/%/.ssh/%%"
+        - name: etc
+          list:
+            - "/etc/%%"
+        - name: tmp
+          list:
+            - "/tmp/%%"
+        - name: bin
+          list:
+            - "/bin/%%"
+            - "/sbin/%%"
+            - "/usr/bin/%%"
+            - "/usr/sbin/%%"
+            - "/usr/local/bin/%%"
+            - "/usr/local/sbin/%%"
+            - "/opt/bin/%%"
+            - "/opt/sbin/%%"
+        - name: boot
+          list:
+            - "/boot/%%"
+        - name: lib
+          list:
+            - "/lib/%%"
+            - "/lib64/%%"
+            - "/usr/lib/%%"
+            - "/usr/lib64/%%"
+            - "/usr/local/lib/%%"
+            - "/opt/lib/%%"
+        - name: lost+found
+          list:
+            - "/lost+found/%"
+        - name: root
+          list:
+            - "/%"
+        - name: roothome
+          list:
+            - "/root/%%"
+        - name: tmpa
+          list:
+            - "/var/tmp/a/.%"
+        - name: tmpb
+          list:
+            - "/var/tmp/b/.%%"
+        - name: webroot
+          list:
+            - "/var/www/%%"
+    - osquery_fim_excludepaths:
+        - name: tmp
+          list:
+            - /tmp/too_many_events/
+            - /tmp/too_many_events2/%%
+            - /tmp/too_many_events3/%
+            # - /tmp/excluded1-%
+            # - /tmp/%-excluded2
+            # - /tmp/excluded3-%-testing
+            # - /tmp/excluded4-%-testing-%-testing-%
+            - /tmp/excluded5-exact-match
+            # - /tmp/excluded6-%%
+  pre_tasks:
+    - name: Ubuntu | Install python3
+      raw: test -e /usr/bin/python3 || (apt -y update && apt install -y python3-minimal)
+      register: python3
+      changed_when: "'installed' in python3.stdout"
+      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 16)
+    - name: RedHat | Install python3
+      raw: test -e /usr/bin/python3 || (yum install -y python3)
+      register: python3
+      changed_when: "'installed' in python3.stdout"
+      when: (ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8)
+    - name: Gather Facts
+      setup:
+      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 16)
+    - name: Ubuntu Bionic+, Redhat 8+ | Enforce python3 for ansible
+      set_fact:
+        ansible_python_interpreter: /usr/bin/python3
+      when: >
+        (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 16) or
+        (ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8)
+  roles:
+    - juju4.osquery

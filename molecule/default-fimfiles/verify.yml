@@ -1,0 +1,98 @@
+---
+
+- name: Verify
+  hosts: molecule
+  tasks:
+    - name: Ensure /etc/osquery/osquery.conf config file is present
+      stat:
+        path: /etc/osquery/osquery.conf
+      register: cfg
+    - name: Validate config present
+      assert:
+        that: cfg.stat.exists and cfg.stat.size != 0
+
+    - name: Ensure process is running
+      command: pgrep -u root osqueryd
+      register: ps
+      changed_when: false
+      ignore_errors: true
+    - name: Validate ps output
+      assert:
+        that: ps.stdout
+      failed_when: false
+
+    - name: list /var/log/osquery
+      command: ls -lA /var/log/osquery
+      changed_when: false
+
+    - name: Fetch content of /var/log/osquery/osqueryd.INFO
+      slurp:
+        src: /var/log/osquery/osqueryd.INFO
+      register: info
+    - name: Validate /var/log/osquery/osqueryd.INFO
+      assert:
+        that: >
+          "'Log line format:' in info['content'] | b64decode"
+
+    - name: Check if /var/log/osquery/osqueryd.WARNING exists
+      stat:
+        path: /var/log/osquery/osqueryd.WARNING
+      register: warnfile
+    - name: Fetch content of /var/log/osquery/osqueryd.WARNING
+      slurp:
+        src: /var/log/osquery/osqueryd.WARNING
+      register: warn
+      when: warnfile.stat.exists
+    - name: Validate /var/log/osquery/osqueryd.WARNING
+      assert:
+        that: >
+          "'Log line format:' in warn['content'] | b64decode and
+          'kernel: Cannot access /dev/osquery' not in warn['content'] | b64decode"
+      when: warnfile.stat.exists
+
+    - name: Check if /var/log/osquery/osqueryd.results.logs exists
+      stat:
+        path: /var/log/osquery/osqueryd.results.logs
+      register: resfile
+    - name: Fetch content of /var/log/osquery/osqueryd.results.logs
+      slurp:
+        src: /var/log/osquery/osqueryd.results.logs
+      register: results
+      when: resfile.stat.exists
+    - name: Validate /var/log/osquery/osqueryd.results.logs
+      assert:
+        that: >
+          "'Log line format:' in res['content'] | b64decode and
+          'kernel: Cannot access /dev/osquery' not in res['content'] | b64decode and
+          '\"system_info\",' in res['content'] | b64decode and
+          '\"physical_memory\":' in res['content'] | b64decode and
+          '\"target_path\":\"\/\/fim-testing1' in res['content'] | b64decode and
+          '\"target_path\":\"\/root\/fim-testing2' in res['content'] | b64decode and
+          '\"target_path\":\"\/lib\/fim-testing3' in res['content'] | b64decode and
+          '\"target_path\":\"\/usr\/bin\/fim-testing4' in res['content'] | b64decode and
+          '\"target_path\":\"\/usr\/bin\/.fim-testing5' in res['content'] | b64decode and
+          '\"action\":\"CREATED\"' in res['content'] | b64decode and
+          '\"action\":\"UPDATED\"' in res['content'] | b64decode and
+          '\"target_path\":\"\/var\/' not in res['content'] | b64decode and
+          '\"target_path\":\"\/tmp\/too_many_events\/fim-testing1' not in res['content'] | b64decode and
+          '\"target_path\":\"\/tmp\/too_many_events2\/fim-testing1' not in res['content'] | b64decode and
+          '\"target_path\":\"\/tmp\/too_many_events2\/a\/fim-testing2' not in res['content'] | b64decode and
+          '\"target_path\":\"\/tmp\/too_many_events2\/a\/b\/fim-testing3' not in res['content'] | b64decode and
+          '\"target_path\":\"\/tmp\/too_many_events3\/fim-testing1' not in res['content'] | b64decode and
+          '\"target_path\":\"\/tmp\/too_many_events3\/a\/b\/fim-testing3' not in res['content'] | b64decode and
+          '\"target_path\":\"\/tmp\/excluded1-abcdef' not in res['content'] | b64decode and
+          '\"target_path\":\"\/tmp\/abcdef-excluded2' not in res['content'] | b64decode and
+          '\"target_path\":\"\/tmp\/excluded3-abcdef-testing' not in res['content'] | b64decode and
+          '\"target_path\":\"\/tmp\/excluded4-abcdef-testing-ghijkl-testing-mnopqr' not in res['content'] | b64decode and
+          '\"target_path\":\"\/tmp\/excluded5-exact-match' not in res['content'] | b64decode and
+          '\"target_path\":\"\/tmp\/excluded6-abcdef' not in res['content'] | b64decode and
+          '\"target_path\":\"\/tmp\/excluded6-testing\/excluded-abcdef' not in res['content'] | b64decode and
+          '\"target_path\":\"\/var\/tmp\/fim-testing-a\/fim-testing1' not in res['content'] | b64decode and
+          '\"target_path\":\"\/var\/tmp\/fim-testing-a\/.b/fim-testing3' not in res['content'] | b64decode and
+          '\"target_path\":\"\/\/fim-testing-a' in res['content'] | b64decode and
+          '\"target_path\":\"\/\/fim-testing-dir' in res['content'] | b64decode and
+          '\"target_path\":\"\/\/fim-testing0' in res['content'] | b64decode and
+          '\"target_path\":\"\/fim-testing-a\/fim-testing-b\/fim-testing10' not in res['content'] | b64decode and
+          '\"target_path\":\"\/fim-testing-a\/fim-testing-b\/fim-testing-c\/fim-testing11' not in res['content'] | b64decode
+          "
+      when: resfile.stat.exists

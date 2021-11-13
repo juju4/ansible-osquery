@@ -1,5 +1,5 @@
 ---
-name: AnsibleCI
+name: default-fimfiles
 
 on:
   push:

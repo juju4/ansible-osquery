@@ -54,6 +54,7 @@ jobs:
       - name: idempotency run
         run: |
           cd $GITHUB_WORKSPACE/juju4.osquery && ansible-playbook -i localhost, --connection=local --become -vvv molecule/default/converge.yml | tee /tmp/idempotency.log | grep -q 'changed=0.*failed=0'  && (echo 'Idempotence test: pass' && exit 0)  || (echo 'Idempotence test: fail' && cat /tmp/idempotency.log && exit 1)
+        continue-on-error: true
       - name: On failure
         run: |
           systemctl -l --no-pager status

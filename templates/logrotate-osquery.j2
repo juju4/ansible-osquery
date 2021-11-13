@@ -15,7 +15,7 @@
     sharedscripts
 {% if osquery_reporting %}
     prerotate
-        test ! -x /usr/local/scripts/{{ osquery_reporting_template | basename }} || {% if ansible_distribution == 'Ubuntu' %}sudo -u {{ syslog_user }} {% endif %}/usr/local/scripts/{{ osquery_reporting_template | basename }} 2>&1 | {% if ansible_distribution == 'Ubuntu' %}sudo -u {{ syslog_user }} {% endif %}tee {{ osquery_reporting_dest }}/osquery-report-`date +%Y%m%d` >/dev/null
+        test ! -x /usr/local/scripts/{{ osquery_reporting_template | basename }} || {% if ansible_distribution == 'Ubuntu' %}sudo -u {{ syslog_user }} {% endif %}/usr/local/scripts/{{ osquery_reporting_template | basename }} 2>&1 >/dev/null
     endscript
 {% endif %}
     postrotate
@@ -44,11 +44,6 @@
     sharedscripts
     # Ubuntu: parent directory has insecure permissions (It's world writable or writable by group which is not "root")
     su root {{ osquery_syslog_dir_group | default(varlog_group) }}
-{% if osquery_reporting %}
-    prerotate
-        test ! -x /usr/local/scripts/{{ osquery_reporting_template | basename }} || {% if ansible_distribution == 'Ubuntu' %}sudo -u {{ syslog_user }} {% endif %}/usr/local/scripts/{{ osquery_reporting_template | basename }} 2>&1 | {% if ansible_distribution == 'Ubuntu' %}sudo -u {{ syslog_user }} {% endif %}tee {{ osquery_reporting_dest }}/osquery-report-`date +%Y%m%d` >/dev/null
-    endscript
-{% endif %}
     postrotate
        if invoke-rc.d osqueryd status > /dev/null 2>&1; then \
           invoke-rc.d osqueryd restart > /dev/null 2>&1; \

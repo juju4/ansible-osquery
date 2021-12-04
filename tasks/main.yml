@@ -73,7 +73,7 @@
           ignore_errors: true
           register: pgrep
         - name: Docker | Start service
-          shell: nohup /usr/bin/osqueryd --flagfile /etc/osquery/osquery.flags --config_path /etc/osquery/osquery.conf &
+          shell: nohup /opt/osquery/bin/osqueryd --flagfile /etc/osquery/osquery.flags --config_path /etc/osquery/osquery.conf &
           tags:
             - osquery
             - service

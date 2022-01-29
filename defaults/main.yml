@@ -94,6 +94,9 @@ osquery_fim_filepaths:
   - name: boot
     list:
       - "/boot/%%"
+  - name: dev_shm
+    list:
+      - "/dev/shm/%%"
   - name: lib
     list:
       - "/lib/%%"

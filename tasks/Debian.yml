@@ -39,7 +39,7 @@
   register: pkg_result
   until: pkg_result is success
 
-- include: apparmor.yml
+- import_tasks: apparmor.yml
   when: >
     not (ansible_virtualization_type is defined and
           (ansible_virtualization_type == "lxc" or ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd")

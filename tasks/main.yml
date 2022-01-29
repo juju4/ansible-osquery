@@ -11,12 +11,12 @@
   tags:
     - osquery
 
-- include: CentOS.yml
+- import_tasks: CentOS.yml
   when: ansible_os_family == "RedHat"
   tags:
     - osquery
 
-- include: Debian.yml
+- import_tasks: Debian.yml
   when: ansible_os_family == "Debian"
   tags:
     - osquery
@@ -43,10 +43,10 @@
       register: pkg_result
       until: pkg_result is success
 
-    - include: systemd.yml
+    - import_tasks: systemd.yml
       when: osquery_systemd_restriction_enable|bool
 
-    - include: configure.yml
+    - import_tasks: configure.yml
       tags:
         - osquery
         - config
@@ -84,9 +84,9 @@
                   (ansible_virtualization_type == "containerd" or ansible_virtualization_type == "docker")
                 )
 
-    - include: symlink-loop.yml
+    - import_tasks: symlink-loop.yml
 
-    - include: reporting.yml
+    - import_tasks: reporting.yml
       when: osquery_reporting
   when: ansible_os_family == "RedHat" or ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
 
@@ -94,10 +94,10 @@
   meta: flush_handlers
 
 - block:
-    - include: testing.yml
+    - import_tasks: testing.yml
       when: osquery_testing|bool
 
-    - include: profiling.yml
+    - import_tasks: profiling.yml
       when: osquery_profiling|bool
 
     - name: pause a bit to have few queries results

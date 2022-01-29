@@ -1,6 +1,6 @@
 ---
 
-- include: kolide-enroll.yml
+- import_tasks: kolide-enroll.yml
   when: kolide_local_enroll
 
 - name: check if osquery is present
@@ -166,10 +166,10 @@
         - restart rsyslog - docker
   when: osquery_rsyslog|bool
 
-- include: syslog-target.yml
+- import_tasks: syslog-target.yml
   when: osquery_syslog_target is defined and osquery_syslog_target
 
-- include: selinux-end.yml
+- import_tasks: selinux-end.yml
   when: >
     not (ansible_virtualization_type is defined and
           (ansible_virtualization_type == "lxc" or ansible_virtualization_type == "docker" or
@@ -178,5 +178,5 @@
         ) and
     ansible_os_family == "RedHat"
 
-- include: reporting.yml
+- import_tasks: reporting.yml
   when: osquery_reporting

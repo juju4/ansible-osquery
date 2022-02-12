@@ -67,6 +67,7 @@ kolide_local_enroll: false
 
 osquery_fim: true
 osquery_fim_interval: 5
+# https://isc.sans.edu/forums/diary/What+to+watch+with+your+FIM/20897
 osquery_fim_filepaths:
   - name: homes_sshdir
     list:
@@ -75,6 +76,7 @@ osquery_fim_filepaths:
   - name: etc
     list:
       - "/etc/%%"
+      - "/usr/local/etc/%%"
   ## Take care if using a lot /tmp. can trigger
   ## 'Expiring events for subscriber: file_events (overflowed limit 1000)'
   ## => losing many queries results (fim or not)

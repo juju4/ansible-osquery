@@ -1,13 +1,13 @@
 ---
 
 - name: get source repository for profiling tools
-  git:
+  ansible.builtin.git:
     repo: https://github.com/facebook/osquery.git
     dest: /root/osquery
     version: "{{ osquery_git_version | default('081d5053eef2afd94eac3f4b918e83ca7b5061cd') }}"
 
 - name: ensure profiling dependencies are present - pkg
-  package:
+  ansible.builtin.package:
     name: "{{ item }}"
     state: present
   with_items:
@@ -15,17 +15,17 @@
   register: pkg_result
   until: pkg_result is success
 - name: ensure profiling dependencies are present - pip
-  pip:
+  ansible.builtin.pip:
     name: psutil
     state: present
   register: pkg_result
   until: pkg_result is success
 - name: profiling
-  command: >
+  ansible.builtin.command: >
     ./tools/analysis/profile.py --config {{ osquery_profiling_conf }} --shell /usr/bin/osqueryi --count 1 --rounds 4
   args:
     chdir: /root/osquery
   changed_when: false
   register: perf
 - name: Debug | perf output
-  debug: var=perf.stdout_lines
+  ansible.builtin.debug: var=perf.stdout_lines

@@ -1,15 +1,15 @@
 ---
 
 - name: Get local kolide enroll secret
-  command: fleetctl get enroll-secret
+  ansible.builtin.command: fleetctl get enroll-secret
   changed_when: false
   register: fleetsecret
   no_log: "{{ osquery_nolog | default(true) }}"
 
 - name: Set fact enroll_secret
-  set_fact:
+  ansible.builtin.set_fact:
     osquery_enroll_secret: "{{ fleetsecret.stdout | regex_findall(' secret: (.*)$') | first }}"
   no_log: "{{ osquery_nolog | default(true) }}"
 
 - name: Debug | osquery_enroll_secret
-  debug: var=osquery_enroll_secret verbosity=2
+  ansible.builtin.debug: var=osquery_enroll_secret verbosity=2

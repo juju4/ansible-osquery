@@ -2,14 +2,14 @@
 # tasks file for osquery (CentOS specific)
 
 - name: Install osquery repository key
-  rpm_key:
+  ansible.builtin.rpm_key:
     state: present
     key: "{{ _osquery_repositorykey }}"
   register: pkg_result
   until: pkg_result is success
 
 - name: Install osquery repository
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ _osquery_repository }}"
     dest: "/etc/yum.repos.d/{{ _osquery_repository | basename }}"
     mode: '0644'

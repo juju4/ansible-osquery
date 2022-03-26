@@ -2,7 +2,7 @@
 
 - block:
     - name: ensure directory exists - before osquery start for inotify
-      file:
+      ansible.builtin.file:
         dest: "{{ item }}"
         state: directory
         mode: '0755'
@@ -12,22 +12,22 @@
       notify:
         - restart osquery
     - name: Flush handlers
-      meta: flush_handlers
+      ansible.builtin.meta: flush_handlers
   when: osquery_testing_fimfiles or osquery_testing_fim_load
 
 - name: pause a bit
-  pause:
+  ansible.builtin.pause:
     seconds: 10
 
 - block:
     - name: systemd | check service status
-      command: "systemctl status osqueryd -l"
+      ansible.builtin.command: "systemctl status osqueryd -l"
       changed_when: false
       register: systemctl
       args:
         warn: false
     - name: Debug | systemctl output
-      debug: var=systemctl.stdout_lines
+      ansible.builtin.debug: var=systemctl.stdout_lines
   when: >
     ansible_service_mgr == "systemd" and
     not (ansible_virtualization_type is defined and (
@@ -36,18 +36,18 @@
     )
 - block:
     - name: service | check service status
-      command: "service osqueryd status"
+      ansible.builtin.command: "service osqueryd status"
       args:
         warn: false
       changed_when: false
       register: service
     - name: Debug | service output
-      debug: var=service.stdout_lines
+      ansible.builtin.debug: var=service.stdout_lines
   when: ansible_service_mgr == "service"
 
 - block:
     - name: ensure directory exists
-      file:
+      ansible.builtin.file:
         dest: "{{ item }}"
         state: directory
         mode: '0755'
@@ -72,7 +72,7 @@
 
 - block:
     - name: create files normally excluded
-      file:
+      ansible.builtin.file:
         name: "{{ item }}"
         state: touch
         mode: '0644'
@@ -104,7 +104,7 @@
         - /fim-testing-a/fim-testing-b/fim-testing10
         - /fim-testing-a/fim-testing-b/fim-testing-c/fim-testing11
     - name: test files
-      file:
+      ansible.builtin.file:
         name: "{{ item }}"
         state: touch
         mode: '0644'
@@ -113,30 +113,30 @@
 
 - block:
     - name: fallocate big file
-      command: "fallocate {{ osquery_fallocate_args | default('') }} -l {{ osquery_testing_fim_load_bigger }} /etc/testing-big-file"
+      ansible.builtin.command: "fallocate {{ osquery_fallocate_args | default('') }} -l {{ osquery_testing_fim_load_bigger }} /etc/testing-big-file"
       args:
         creates: /etc/testing-big-file
     - name: creation of many small files in excluded directory
-      command: "split -b {{ osquery_testing_fim_load_smaller_ex }} /etc/testing-big-file testing-"
+      ansible.builtin.command: "split -b {{ osquery_testing_fim_load_smaller_ex }} /etc/testing-big-file testing-"
       args:
         chdir: /tmp/too_many_events
         creates: /tmp/too_many_events/testing-aa
     - name: clean up
-      shell: find /tmp/too_many_events/ -name 'testing-*' -exec rm {} \;
+      ansible.builtin.shell: find /tmp/too_many_events/ -name 'testing-*' -exec rm {} \;
       failed_when: false
       when: osquery_testing_cleanup
     - name: creation of many small files
-      command: "split -b {{ osquery_testing_fim_load_smaller }} /etc/testing-big-file testing-"
+      ansible.builtin.command: "split -b {{ osquery_testing_fim_load_smaller }} /etc/testing-big-file testing-"
       args:
         chdir: /etc
         creates: /etc/testing-aa
     - name: clean up
-      shell: find /etc/ -name 'testing-*' -exec rm {} \;
+      ansible.builtin.shell: find /etc/ -name 'testing-*' -exec rm {} \;
       failed_when: false
       when: osquery_testing_cleanup
     # more diverse load? openssl speed, stress...
     - name: retrieve log results
-      command: "{{ item }}"
+      ansible.builtin.command: "{{ item }}"
       with_items:
         - head -20 /var/log/osquery/osqueryd.results.log
         - tail -20 /var/log/osquery/osqueryd.results.log
@@ -146,7 +146,7 @@
   when: osquery_testing_fim_load
 
 - name: Get eicar file to check yara rules
-  get_url:
+  ansible.builtin.get_url:
     url: http://www.eicar.org/download/eicar.com
     dest: /root/test-fim-yara-eicar.com
     mode: '0644'

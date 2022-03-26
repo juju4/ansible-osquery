@@ -1,20 +1,20 @@
 ---
 
 - name: Ensure yara signatures directory exists
-  file:
+  ansible.builtin.file:
     path: "{{ osquery_yara_dir }}"
     state: directory
     mode: '0700'
 
 - name: Copy yara signatures from orchestrator
-  copy:
+  ansible.builtin.copy:
     src: "{{ item }}"
     dest: "{{ osquery_yara_dir }}/{{ item | basename }}"
     mode: '0600'
   with_items: "{{ osquery_yara_files }}"
 
 - name: Download yara signatures
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ item }}"
     dest: "{{ osquery_yara_dir }}/{{ item | basename }}"
     mode: '0600'

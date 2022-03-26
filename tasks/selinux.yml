@@ -1,7 +1,7 @@
 ---
 
 - name: Ensure selinux package are present
-  package:
+  ansible.builtin.package:
     name: "{{ item }}"
     state: present
   with_items: "{{ osquery_selinux_pkgs }}"
@@ -9,13 +9,13 @@
   until: pkg_result is success
 
 - name: Ensure osquery directory exists
-  file:
+  ansible.builtin.file:
     dest: /etc/osquery
     state: directory
     mode: '0755'
 
 - name: Ensure osquery selinux policy is set
-  template:
+  ansible.builtin.template:
     src: "{{ item }}.j2"
     dest: "/etc/osquery/{{ item }}"
     mode: '0600'
@@ -29,7 +29,7 @@
 
 # FIXME!
 - name: Generate osquery policy file
-  command: "{{ item }}"  # noqa no-handler
+  ansible.builtin.command: "{{ item }}"  # noqa no-handler
   args:
     chdir: /etc/osquery
   with_items:

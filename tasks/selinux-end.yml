@@ -1,13 +1,13 @@
 ---
 
 - name: Check if restorecon marker
-  stat:
+  ansible.builtin.stat:
     path: /root/.ansible_osquery_restorecon
   register: marker1
 
 - block:
     - name: RedHat | Ensure selinux context is correctly set
-      command: "/sbin/restorecon -F -R -v {{ item }}"  # noqa 301
+      ansible.builtin.command: "/sbin/restorecon -F -R -v {{ item }}"  # noqa 301
       with_items:
         - /opt/osquery/bin/osqueryd
         - /usr/lib/systemd/system/osqueryd.service
@@ -15,7 +15,7 @@
         - /etc/osquery
         - /opt/osquery/share/osquery/packs
     - name: RedHat | Create restorecon marker
-      file:
+      ansible.builtin.file:
         path: /root/.ansible_osquery_restorecon
         mode: '0600'
         state: touch

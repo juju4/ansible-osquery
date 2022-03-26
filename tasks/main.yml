@@ -2,11 +2,11 @@
 # tasks file for osquery
 
 - name: Include distribution specific variables
-  include_vars: "{{ ansible_os_family }}.yml"
+  ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
   tags:
     - osquery
 - name: Include version-specific variables for RedHat
-  include_vars: "RedHat-{{ ansible_distribution_major_version }}.yml"
+  ansible.builtin.include_vars: "RedHat-{{ ansible_distribution_major_version }}.yml"
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version == '8'
   tags:
     - osquery
@@ -23,7 +23,7 @@
 
 - block:
     - name: Install osquery
-      package:
+      ansible.builtin.package:
         name: "{{ item }}"
         state: present
       with_items: "{{ osquery_packages }}"
@@ -33,7 +33,7 @@
       until: pkg_result is success
 
     - name: Install osquery debug packages
-      package:
+      ansible.builtin.package:
         name: "{{ item }}"
         state: present
       with_items: "{{ osquery_debug_packages }}"
@@ -52,12 +52,12 @@
         - config
 
     - name: Enable service
-      service: name=osqueryd enabled={{ osquery_service_enable|bool }}
+      ansible.builtin.service: name=osqueryd enabled={{ osquery_service_enable|bool }}
       tags:
         - osquery
         - service
     - name: Start service
-      service: name=osqueryd state=started
+      ansible.builtin.service: name=osqueryd state=started
       tags:
         - osquery
         - service
@@ -68,12 +68,12 @@
                 )
     - block:
         - name: Docker | Check if osqueryd process
-          command: pgrep -u root osqueryd
+          ansible.builtin.command: pgrep -u root osqueryd
           changed_when: false
           ignore_errors: true
           register: pgrep
         - name: Docker | Start service
-          shell: nohup /opt/osquery/bin/osqueryd --flagfile /etc/osquery/osquery.flags --config_path /etc/osquery/osquery.conf &
+          ansible.builtin.shell: nohup /opt/osquery/bin/osqueryd --flagfile /etc/osquery/osquery.flags --config_path /etc/osquery/osquery.conf &
           tags:
             - osquery
             - service
@@ -91,7 +91,7 @@
   when: ansible_os_family == "RedHat" or ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
 
 - name: Flush handlers
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers
 
 - block:
     - import_tasks: testing.yml
@@ -101,7 +101,7 @@
       when: osquery_profiling|bool
 
     - name: pause a bit to have few queries results
-      pause:
+      ansible.builtin.pause:
         seconds: 80
       when: osquery_testing_pause or osquery_testing|bool
 

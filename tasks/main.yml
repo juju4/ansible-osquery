@@ -21,7 +21,8 @@
   tags:
     - osquery
 
-- block:
+- name: RedHat or Debian
+  block:
     - name: Install osquery
       ansible.builtin.package:
         name: "{{ item }}"
@@ -66,7 +67,8 @@
             not (ansible_virtualization_type is defined and
                   (ansible_virtualization_type == "containerd" or ansible_virtualization_type == "docker")
                 )
-    - block:
+    - name: Service
+      block:
         - name: Docker | Check if osqueryd process
           ansible.builtin.command: pgrep -u root osqueryd
           changed_when: false
@@ -93,7 +95,8 @@
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
 
-- block:
+- name: Testing
+  block:
     - import_tasks: testing.yml
       when: osquery_testing|bool
 

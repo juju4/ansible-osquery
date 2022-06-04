@@ -6,7 +6,8 @@
 - name: check if osquery is present
   ansible.builtin.stat: path=/etc/osquery
   register: has_osquery
-- block:
+- name: Osquery present
+  block:
     - name: ensure directories exist
       ansible.builtin.file:
         dest: "{{ item.d }}"
@@ -74,7 +75,8 @@
       changed_when: false
       register: confcheck
       failed_when: "'error' in confcheck.stdout or 'fail' in confcheck.stdout"
-    - block:
+    - name: Logrotate
+      block:
         - name: ensure logrotate package is present
           ansible.builtin.package:
             name: logrotate
@@ -100,7 +102,8 @@
         monit_osqueryd: true
   when: has_osquery.stat.exists
 
-- block:
+- name: FIM
+  block:
     - name: Debug | ansible_virtualization_type
       ansible.builtin.debug: var=ansible_virtualization_type verbosity=1
     - name: review inotify sysctl settings for osquery
@@ -126,7 +129,8 @@
 
 ## ensure no auditd at the same time
 ## https://osquery.readthedocs.io/en/stable/deployment/process-auditing/
-- block:
+- name: process auditing
+  block:
     - name: ensure auditd service is disabled and masked
       ansible.builtin.service: name=auditd masked=yes
       when: >
@@ -154,7 +158,8 @@
   ansible.builtin.debug: var=rsyslog_v verbosity=1
 
 # https://osquery.readthedocs.io/en/stable/deployment/syslog/
-- block:
+- name: rsyslog
+  block:
     - name: setup rsyslog pipe for osquery communication
       ansible.builtin.template:
         src: osquery-rsyslog.conf.j2

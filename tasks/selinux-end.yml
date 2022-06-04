@@ -5,7 +5,8 @@
     path: /root/.ansible_osquery_restorecon
   register: marker1
 
-- block:
+- name: selinux
+  block:
     - name: RedHat | Ensure selinux context is correctly set
       ansible.builtin.command: "/sbin/restorecon -F -R -v {{ item }}"  # noqa 301
       with_items:

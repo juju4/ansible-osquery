@@ -1,6 +1,7 @@
 ---
 
-- block:
+- name: FIM
+  block:
     - name: ensure directory exists - before osquery start for inotify
       ansible.builtin.file:
         dest: "{{ item }}"
@@ -19,7 +20,8 @@
   ansible.builtin.pause:
     seconds: 10
 
-- block:
+- name: Systemd
+  block:
     - name: systemd | check service status
       ansible.builtin.command: "systemctl status osqueryd -l"
       changed_when: false
@@ -34,7 +36,8 @@
       ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd"
       )
     )
-- block:
+- name: Service
+  block:
     - name: service | check service status
       ansible.builtin.command: "service osqueryd status"
       args:
@@ -45,7 +48,8 @@
       ansible.builtin.debug: var=service.stdout_lines
   when: ansible_service_mgr == "service"
 
-- block:
+- name: Fim/Load
+  block:
     - name: ensure directory exists
       ansible.builtin.file:
         dest: "{{ item }}"
@@ -70,7 +74,8 @@
         - /fim-testing-dir
   when: osquery_testing_fimfiles or osquery_testing_fim_load
 
-- block:
+- name: FIM
+  block:
     - name: create files normally excluded
       ansible.builtin.file:
         name: "{{ item }}"
@@ -111,7 +116,8 @@
       with_items: "{{ osquery_testing_fim_files }}"
   when: osquery_testing_fimfiles
 
-- block:
+- name: load
+  block:
     - name: fallocate big file
       ansible.builtin.command: "fallocate {{ osquery_fallocate_args | default('') }} -l {{ osquery_testing_fim_load_bigger }} /etc/testing-big-file"
       args:

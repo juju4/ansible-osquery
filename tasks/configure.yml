@@ -107,7 +107,7 @@
     - name: Debug | ansible_virtualization_type
       ansible.builtin.debug: var=ansible_virtualization_type verbosity=1
     - name: review inotify sysctl settings for osquery
-      sysctl:
+      ansible.posix.sysctl:
         name: "{{ item.n }}"
         value: "{{ item.v }}"
         sysctl_set: yes

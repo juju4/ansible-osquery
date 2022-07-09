@@ -8,8 +8,8 @@
     no_proxy: "{{ lookup('env', 'no_proxy') }}"
   remote_user: root
   vars:
-    - osquery_testing: true
-    - osquery_testing_yara: true
+    osquery_testing: true
+    osquery_testing_yara: true
   pre_tasks:
     - name: Ubuntu | Install python3
       ansible.builtin.raw: test -e /usr/bin/python3 || (apt -y update && apt install -y python3-minimal)

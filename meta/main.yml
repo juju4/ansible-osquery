@@ -3,7 +3,6 @@ galaxy_info:
   role_name: osquery
   author: juju4
   description: Install and configure osquery
-  company:
   license: BSD
   min_ansible_version: '1.9'
   platforms:

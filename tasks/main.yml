@@ -53,7 +53,7 @@
         - config
 
     - name: Enable service
-      ansible.builtin.service: name=osqueryd enabled={{ osquery_service_enable|bool }}
+      ansible.builtin.service: name=osqueryd enabled={{ osquery_service_enable | bool }}
       tags:
         - osquery
         - service

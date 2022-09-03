@@ -53,7 +53,7 @@
       "interval" : "300"
     },
     "processes": {
-      "query": "SELECT p1.pid, p1.name, p1.path, p1.cmdline, p1.parent, p2.cmdline as pcmdline from processes as p1, processes as p2 where p1.parent == p2.pid;",
+      "query": "SELECT p1.pid, p1.name, p1.path, p1.cmdline, p1.uid, p1.euid, u.username, p1.parent, p2.name, p2.cmdline as pcmdline from processes as p1, processes as p2, users as u where p1.parent == p2.pid and p1.uid == u.uid;",
       "description": "Retrieve list of processes",
       "interval": "300"
     },
@@ -63,8 +63,8 @@
       "interval" : "300"
     },
     "process_env": {
-      "query" : "select p1.pid, key, value, p2.cmdline from process_envs as p1, processes as p2 where p1.pid == p2.pid and key!="LS_COLORS" and key!="TERMCAP";",
-      "interval" : ""3600"",
+      "query" : "select p1.pid, key, value, p2.cmdline from process_envs as p1, processes as p2 where p1.pid == p2.pid and key!='LS_COLORS' and key!='TERMCAP';",
+      "interval" : "3600",
       "platform": "posix",
       "version" : "1.4.5",
       "description" : "Retrieves all the environment variables per process in the target system.",

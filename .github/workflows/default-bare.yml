@@ -63,7 +63,7 @@ jobs:
         run: |
           systemd-analyze security osquery || true
           systemctl --failed || true
-          systemctl status osquery || true
+          systemctl status osqueryd || true
         if: ${{ always() }}
         continue-on-error: true
       - name: After script - osquery

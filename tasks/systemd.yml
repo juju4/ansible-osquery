@@ -16,3 +16,14 @@
   notify:
     - Reload systemd
     - Restart osquery
+
+- name: Fix base unit path
+  ansible.builtin.replace:
+    path: /usr/lib/systemd/system/osqueryd.service
+    regexp: '/opt/osquery/bin'
+    replace: '/usr/bin'
+    mode: '0644'
+    backup: "{{ osquery_backup | default(false) }}"
+  notify:
+    - Reload systemd
+    - Restart osquery

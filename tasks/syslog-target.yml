@@ -8,7 +8,7 @@
     group: "{{ varlog_group }}"
   with_items: "{{ osquery_syslog_dirs }}"
 
-- name: setup rsyslog to send osquery logs to a specific target
+- name: Setup rsyslog to send osquery logs to a specific target
   ansible.builtin.template:
     src: rsyslog-osquery-target.conf.j2
     dest: /etc/rsyslog.d/30-osquery-target.conf
@@ -16,5 +16,5 @@
     backup: "{{ osquery_backup | default(false) }}"
     validate: 'rsyslogd -d -N 1 -f %s'
   notify:
-    - restart rsyslog
-    - restart rsyslog - docker
+    - Restart rsyslog
+    - Restart rsyslog - docker

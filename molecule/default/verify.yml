@@ -21,7 +21,7 @@
         that: ps.stdout
       failed_when: false
 
-    - name: list /var/log/osquery
+    - name: List /var/log/osquery
       ansible.builtin.command: ls -lA /var/log/osquery
       changed_when: false
 

@@ -1,14 +1,14 @@
 ---
 # handlers file for osquery
 
-- name: reload osqueryd apparmor profile
+- name: Reload osqueryd apparmor profile
   ansible.builtin.shell: cat /etc/apparmor.d/usr.bin.osqueryd | sudo apparmor_parser -r
   when: >
     not (ansible_virtualization_type is defined and
           (ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd")
         )
 
-- name: reload systemd
+- name: Reload systemd
   ansible.builtin.systemd:
     daemon_reload: yes
   when: >
@@ -16,28 +16,28 @@
           (ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd")
         )
 
-- name: restart osquery
-  ansible.builtin.shell: "systemctl stop osqueryd; sleep 5; systemctl start osqueryd"  # noqa 303
+- name: Restart osquery
+  ansible.builtin.shell: "systemctl stop osqueryd; sleep 5; systemctl start osqueryd"  # noqa command-instead-of-module
   when: >
     not (ansible_virtualization_type is defined and
           (ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd")
         )
 
-- name: restart osquery - docker
+- name: Restart osquery - docker
   ansible.builtin.service: name=osqueryd state=restarted sleep=5 use=service
   when: >
     (ansible_virtualization_type is defined and
           (ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd")
     )
 
-- name: restart rsyslog
+- name: Restart rsyslog
   ansible.builtin.service: name=rsyslog state=restarted
   when: >
     not (ansible_virtualization_type is defined and
           (ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd")
         )
 
-- name: restart rsyslog - docker
+- name: Restart rsyslog - docker
   ansible.builtin.service: name=rsyslog state=restarted use=service
   when:
     - (ansible_virtualization_type is defined and (ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd"))

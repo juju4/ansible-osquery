@@ -2,7 +2,7 @@
 
 - name: FIM
   block:
-    - name: ensure directory exists - before osquery start for inotify
+    - name: Ensure directory exists - before osquery start for inotify
       ansible.builtin.file:
         dest: "{{ item }}"
         state: directory
@@ -11,18 +11,18 @@
         - /var/tmp/fim-testing-a
         - /var/tmp/fim-testing-b
       notify:
-        - restart osquery
+        - Restart osquery
     - name: Flush handlers
       ansible.builtin.meta: flush_handlers
   when: osquery_testing_fimfiles or osquery_testing_fim_load
 
-- name: pause a bit
+- name: Pause a bit
   ansible.builtin.pause:
     seconds: 10
 
 - name: Systemd
   block:
-    - name: systemd | check service status
+    - name: Systemd | check service status
       ansible.builtin.command: "systemctl status osqueryd -l"
       changed_when: false
       register: systemctl
@@ -38,7 +38,7 @@
     )
 - name: Service
   block:
-    - name: service | check service status
+    - name: Service | check service status
       ansible.builtin.command: "service osqueryd status"
       args:
         warn: false
@@ -50,7 +50,7 @@
 
 - name: Fim/Load
   block:
-    - name: ensure directory exists
+    - name: Ensure directory exists
       ansible.builtin.file:
         dest: "{{ item }}"
         state: directory
@@ -76,7 +76,7 @@
 
 - name: FIM
   block:
-    - name: create files normally excluded
+    - name: Create files normally excluded
       ansible.builtin.file:
         name: "{{ item }}"
         state: touch
@@ -108,7 +108,7 @@
         - /fim-testing0
         - /fim-testing-a/fim-testing-b/fim-testing10
         - /fim-testing-a/fim-testing-b/fim-testing-c/fim-testing11
-    - name: test files
+    - name: Test files
       ansible.builtin.file:
         name: "{{ item }}"
         state: touch
@@ -116,32 +116,32 @@
       with_items: "{{ osquery_testing_fim_files }}"
   when: osquery_testing_fimfiles
 
-- name: load
+- name: Load
   block:
-    - name: fallocate big file
+    - name: Fallocate big file
       ansible.builtin.command: "fallocate {{ osquery_fallocate_args | default('') }} -l {{ osquery_testing_fim_load_bigger }} /etc/testing-big-file"
       args:
         creates: /etc/testing-big-file
-    - name: creation of many small files in excluded directory
+    - name: Creation of many small files in excluded directory
       ansible.builtin.command: "split -b {{ osquery_testing_fim_load_smaller_ex }} /etc/testing-big-file testing-"
       args:
         chdir: /tmp/too_many_events
         creates: /tmp/too_many_events/testing-aa
-    - name: clean up
+    - name: Clean up
       ansible.builtin.shell: find /tmp/too_many_events/ -name 'testing-*' -exec rm {} \;
       failed_when: false
       when: osquery_testing_cleanup
-    - name: creation of many small files
+    - name: Creation of many small files
       ansible.builtin.command: "split -b {{ osquery_testing_fim_load_smaller }} /etc/testing-big-file testing-"
       args:
         chdir: /etc
         creates: /etc/testing-aa
-    - name: clean up
+    - name: Clean up
       ansible.builtin.shell: find /etc/ -name 'testing-*' -exec rm {} \;
       failed_when: false
       when: osquery_testing_cleanup
     # more diverse load? openssl speed, stress...
-    - name: retrieve log results
+    - name: Retrieve log results
       ansible.builtin.command: "{{ item }}"
       with_items:
         - head -20 /var/log/osquery/osqueryd.results.log
@@ -156,4 +156,4 @@
     url: http://www.eicar.org/download/eicar.com
     dest: /root/test-fim-yara-eicar.com
     mode: '0644'
-  when: osquery_testing_yara|bool
+  when: osquery_testing_yara | bool

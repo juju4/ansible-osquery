@@ -22,7 +22,7 @@
     group: root
     backup: "{{ osquery_backup | default(false) }}"
   notify:
-    - reload osqueryd apparmor profile
+    - Reload osqueryd apparmor profile
 
 - name: Apply apparmor profile for osquery
   ansible.builtin.command: aa-complain /usr/bin/osqueryd

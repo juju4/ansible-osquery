@@ -38,14 +38,14 @@
         name: "{{ item }}"
         state: present
       with_items: "{{ osquery_debug_packages }}"
-      when: osquery_debug_packages_install|bool
+      when: osquery_debug_packages_install | bool
       tags:
         - osquery
       register: pkg_result
       until: pkg_result is success
 
     - import_tasks: systemd.yml
-      when: osquery_systemd_restriction_enable|bool
+      when: osquery_systemd_restriction_enable | bool
 
     - import_tasks: configure.yml
       tags:
@@ -63,7 +63,7 @@
         - osquery
         - service
       when: >
-            osquery_service_enable|bool and
+            osquery_service_enable | bool and
             not (ansible_virtualization_type is defined and
                   (ansible_virtualization_type == "containerd" or ansible_virtualization_type == "docker")
                 )
@@ -81,7 +81,7 @@
             - service
           when: pgrep.rc != 0
       when: >
-            osquery_service_enable|bool and
+            osquery_service_enable | bool and
             (ansible_virtualization_type is defined and
                   (ansible_virtualization_type == "containerd" or ansible_virtualization_type == "docker")
                 )
@@ -98,14 +98,14 @@
 - name: Testing
   block:
     - import_tasks: testing.yml
-      when: osquery_testing|bool
+      when: osquery_testing | bool
 
     - import_tasks: profiling.yml
-      when: osquery_profiling|bool
+      when: osquery_profiling | bool
 
-    - name: pause a bit to have few queries results
+    - name: Pause a bit to have few queries results
       ansible.builtin.pause:
         seconds: 80
-      when: osquery_testing_pause or osquery_testing|bool
+      when: osquery_testing_pause or osquery_testing | bool
 
   when: ansible_os_family == "RedHat" or ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"

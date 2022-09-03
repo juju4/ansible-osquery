@@ -3,7 +3,7 @@
 # tasks file for osquery (Debian, Ubuntu specific)
 
 - name: Ensure dirmngr is present for apt-key
-  package:
+  ansible.builtin.package:
     name: dirmngr
     state: present
   register: pkg_result
@@ -11,7 +11,7 @@
 
 - name: Setup osquery APT key
   become: yes
-  apt_key:
+  ansible.builtin.apt_key:
     data: "{{ lookup('file', 'pgp-0x1484120AC4E9F8A1A577AEEE97A80C63C9D8B80B.asc') }}"
     state: present
   tags:
@@ -21,7 +21,7 @@
 
 - name: Ensure apt-transport-https is installed
   become: yes
-  apt:
+  ansible.builtin.apt:
     name: apt-transport-https
     state: present
   tags:
@@ -31,7 +31,7 @@
 
 - name: Configure osquery APT repository
   become: yes
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "{{ _osquery_repository }}"
     state: present
   tags:

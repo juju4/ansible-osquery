@@ -4,18 +4,19 @@
   when: kolide_local_enroll
 
 - name: check if osquery is present
-  stat: path=/etc/osquery
+  ansible.builtin.stat: path=/etc/osquery
   register: has_osquery
-- block:
+- name: Osquery present
+  block:
     - name: ensure directories exist
-      file:
+      ansible.builtin.file:
         dest: "{{ item.d }}"
         state: directory
         mode: "{{ item.m }}"
       with_items:
         - { d: '/var/log/osquery', m: '0755' }
     - name: push extra osquery packs file
-      template:
+      ansible.builtin.template:
         src: "{{ item }}.conf.j2"
         dest: "/opt/osquery/share/osquery/packs/{{ item | basename }}.conf"
         mode: '0644'
@@ -25,13 +26,13 @@
         - restart osquery
         - restart osquery - docker
     - name: Debug | osquery_packs
-      debug: var=osquery_packs
+      ansible.builtin.debug: var=osquery_packs
 
     - import_tasks: yara.yml
       when: osquery_yara
 
     - name: configure osquery
-      template:
+      ansible.builtin.template:
         src: "{{ osquery_template }}"
         dest: /etc/osquery/osquery.conf
         mode: '0644'
@@ -42,12 +43,12 @@
         - restart osquery
         - restart osquery - docker
     - name: "ensure osquery var dir exists"
-      file:
+      ansible.builtin.file:
         state: "directory"
         path: "/var/osquery"
         mode: '0755'
     - name: "express the osquery secret to disk"
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: "/etc/osquery/osquery_enroll_secret"
         line: "{{ osquery_enroll_secret }}"
         state: present
@@ -61,7 +62,7 @@
         - restart osquery
         - restart osquery - docker
     - name: configure osquery flags
-      template:
+      ansible.builtin.template:
         src: "osquery.flags.j2"
         dest: /etc/osquery/osquery.flags
         mode: '0644'
@@ -70,19 +71,20 @@
         - restart osquery
         - restart osquery - docker
     - name: re-validate whole osquery config
-      shell: 'echo .quit | osqueryi --config_path /etc/osquery/osquery.conf --config_check --verbose'
+      ansible.builtin.shell: 'echo .quit | osqueryi --config_path /etc/osquery/osquery.conf --config_check --verbose'
       changed_when: false
       register: confcheck
       failed_when: "'error' in confcheck.stdout or 'fail' in confcheck.stdout"
-    - block:
+    - name: Logrotate
+      block:
         - name: ensure logrotate package is present
-          package:
+          ansible.builtin.package:
             name: logrotate
             state: present
           register: pkg_result
           until: pkg_result is success
         - name: add logrotate configuration for osquery log
-          template:
+          ansible.builtin.template:
             src: logrotate-osquery.j2
             dest: /etc/logrotate.d/osquery
             mode: '0644'
@@ -90,21 +92,22 @@
             validate: 'logrotate -dv %s'
       when: osquery_logrotate|bool
     - name: ensure service is enabled and started
-      service: name=osqueryd state=started enabled=yes
+      ansible.builtin.service: name=osqueryd state=started enabled=yes
       when: >
         not (ansible_virtualization_type is defined and
           (ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd")
         )
     - name: Set fact for monit
-      set_fact:
+      ansible.builtin.set_fact:
         monit_osqueryd: true
   when: has_osquery.stat.exists
 
-- block:
+- name: FIM
+  block:
     - name: Debug | ansible_virtualization_type
-      debug: var=ansible_virtualization_type verbosity=1
+      ansible.builtin.debug: var=ansible_virtualization_type verbosity=1
     - name: review inotify sysctl settings for osquery
-      sysctl:
+      ansible.posix.sysctl:
         name: "{{ item.n }}"
         value: "{{ item.v }}"
         sysctl_set: yes
@@ -126,16 +129,17 @@
 
 ## ensure no auditd at the same time
 ## https://osquery.readthedocs.io/en/stable/deployment/process-auditing/
-- block:
+- name: process auditing
+  block:
     - name: ensure auditd service is disabled and masked
-      service: name=auditd masked=yes
+      ansible.builtin.service: name=auditd masked=yes
       when: >
         not (ansible_virtualization_type is defined and (
           ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd"
           )
         )
     - name: ensure auditd is present
-      package:
+      ansible.builtin.package:
         name: "{{ _osquery_auditd_pkg }}"
         state: present
       register: pkg_result
@@ -143,20 +147,21 @@
   when: osquery_process_auditing|bool
 
 - name: Gather package facts
-  package_facts:
+  ansible.builtin.package_facts:
     manager: auto
 
 - name: get rsyslog version
-  set_fact:
+  ansible.builtin.set_fact:
     rsyslog_v: "{{ ansible_facts.packages['rsyslog'][0]['version'] }}"
 
 - name: Debug | rsyslog version
-  debug: var=rsyslog_v verbosity=1
+  ansible.builtin.debug: var=rsyslog_v verbosity=1
 
 # https://osquery.readthedocs.io/en/stable/deployment/syslog/
-- block:
+- name: rsyslog
+  block:
     - name: setup rsyslog pipe for osquery communication
-      template:
+      ansible.builtin.template:
         src: osquery-rsyslog.conf.j2
         dest: /etc/rsyslog.d/90-osquery.conf
         mode: '0644'

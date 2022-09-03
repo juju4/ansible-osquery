@@ -4,63 +4,63 @@
   hosts: molecule
   tasks:
     - name: Ensure /etc/osquery/osquery.conf config file is present
-      stat:
+      ansible.builtin.stat:
         path: /etc/osquery/osquery.conf
       register: cfg
     - name: Validate config present
-      assert:
+      ansible.builtin.assert:
         that: cfg.stat.exists and cfg.stat.size != 0
 
     - name: Ensure process is running
-      command: pgrep -u root osqueryd
+      ansible.builtin.command: pgrep -u root osqueryd
       register: ps
       changed_when: false
       ignore_errors: true
     - name: Validate ps output
-      assert:
+      ansible.builtin.assert:
         that: ps.stdout
       failed_when: false
 
     - name: list /var/log/osquery
-      command: ls -lA /var/log/osquery
+      ansible.builtin.command: ls -lA /var/log/osquery
       changed_when: false
 
     - name: Fetch content of /var/log/osquery/osqueryd.INFO
-      slurp:
+      ansible.builtin.slurp:
         src: /var/log/osquery/osqueryd.INFO
       register: info
     - name: Validate /var/log/osquery/osqueryd.INFO
-      assert:
+      ansible.builtin.assert:
         that: >
           "'Log line format:' in info['content'] | b64decode"
 
     - name: Check if /var/log/osquery/osqueryd.WARNING exists
-      stat:
+      ansible.builtin.stat:
         path: /var/log/osquery/osqueryd.WARNING
       register: warnfile
     - name: Fetch content of /var/log/osquery/osqueryd.WARNING
-      slurp:
+      ansible.builtin.slurp:
         src: /var/log/osquery/osqueryd.WARNING
       register: warn
       when: warnfile.stat.exists
     - name: Validate /var/log/osquery/osqueryd.WARNING
-      assert:
+      ansible.builtin.assert:
         that: >
           "'Log line format:' in warn['content'] | b64decode and
           'kernel: Cannot access /dev/osquery' not in warn['content'] | b64decode"
       when: warnfile.stat.exists
 
     - name: Check if /var/log/osquery/osqueryd.results.logs exists
-      stat:
+      ansible.builtin.stat:
         path: /var/log/osquery/osqueryd.results.logs
       register: resfile
     - name: Fetch content of /var/log/osquery/osqueryd.results.logs
-      slurp:
+      ansible.builtin.slurp:
         src: /var/log/osquery/osqueryd.results.logs
       register: results
       when: resfile.stat.exists
     - name: Validate /var/log/osquery/osqueryd.results.logs
-      assert:
+      ansible.builtin.assert:
         that: >
           "'Log line format:' in res['content'] | b64decode and
           'kernel: Cannot access /dev/osquery' not in res['content'] | b64decode and

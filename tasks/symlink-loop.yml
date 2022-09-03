@@ -5,7 +5,7 @@
 #   filesystem.cpp:293] Symlink loop detected possibly involving: /usr/bin/X11/X11
 # default: first one is for historical compatibility reason, second ?
 - name: Remove some potential symlink loops - Validate carefully
-  file:
+  ansible.builtin.file:
     dest: "{{ item }}"
     state: absent
     force: false

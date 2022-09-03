@@ -1,7 +1,7 @@
 ---
 
 - name: Ensure target syslog dir exists
-  file:
+  ansible.builtin.file:
     dest: "{{ item }}"
     state: directory
     mode: "{{ varlog_mode }}"
@@ -9,7 +9,7 @@
   with_items: "{{ osquery_syslog_dirs }}"
 
 - name: setup rsyslog to send osquery logs to a specific target
-  template:
+  ansible.builtin.template:
     src: rsyslog-osquery-target.conf.j2
     dest: /etc/rsyslog.d/30-osquery-target.conf
     mode: '0644'

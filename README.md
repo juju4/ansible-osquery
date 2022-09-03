@@ -104,7 +104,7 @@ See also templates/osquery_report.sh.j2
 
 ## Troubleshooting & Known issues
 
-TBD
+* [Conflict between file_events and yara_events in scheduled query results #6793](https://github.com/osquery/osquery/issues/6793)
 
 ## License
 

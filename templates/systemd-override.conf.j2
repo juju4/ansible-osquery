@@ -83,13 +83,7 @@ RestrictSUIDSGID=yes
 {% if (ansible_os_family == 'RedHat' and ansible_distribution_major_version|int >= 8) or (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 20) %}
 SystemCallFilter=@system-service
 {% endif %}
-{% if (ansible_os_family == 'RedHat' and ansible_distribution_major_version|int >= 8) or (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 20) %}
-SystemCallFilter=~@debug @mount @cpu-emulation @resources @clock @raw-io @reboot @swap @privileged
-SystemCallArchitectures=native
-# When system call is disallowed, return error code instead of killing process
-SystemCallErrorNumber=EPERM
-
-{% elif (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int == 18) %}
+{% if (ansible_os_family == 'RedHat' and ansible_distribution_major_version|int >= 8) or (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 18) %}
 SystemCallFilter=~@debug @mount @cpu-emulation @resources @clock @raw-io @reboot @swap
 SystemCallArchitectures=native
 # When system call is disallowed, return error code instead of killing process

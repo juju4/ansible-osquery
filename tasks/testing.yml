@@ -23,10 +23,7 @@
 - name: Systemd
   when: >
     ansible_service_mgr == "systemd" and
-    not (ansible_virtualization_type is defined and (
-      ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd"
-      )
-    )
+    not is_container|bool
   block:
     - name: Systemd | check service status
       ansible.builtin.command: "systemctl status osqueryd -l"

@@ -59,7 +59,7 @@ jobs:
         with:
           ignore_words_file: ${{ env.ANSIBLE_ROLE }}/.codespellignore
           path: ${{ env.ANSIBLE_ROLE }}
-          exclude_file: templates/osquery.sh.j2
+          exclude_file: ${{ env.ANSIBLE_ROLE }}/templates/osquery.sh.j2
         if: ${{ always() }}
       - name: yamllint
         run: |

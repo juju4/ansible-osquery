@@ -220,3 +220,5 @@ osquery_profiling: false
 ## full config might be too long for travis (max 50min)
 # osquery_profiling_conf: /etc/osquery/osquery.conf
 osquery_profiling_conf: /opt/osquery/share/osquery/packs/incident-response.conf
+
+is_container: false

@@ -101,10 +101,8 @@
         name: osqueryd
         state: started
         enabled: yes
-      when: >
-        not (ansible_virtualization_type is defined and
-          (ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd")
-        )
+      when:
+        - not is_container|bool
     - name: Set fact for monit
       ansible.builtin.set_fact:
         monit_osqueryd: true
@@ -115,6 +113,7 @@
     not (ansible_virtualization_type is defined and
           (ansible_virtualization_type == "docker" or
            ansible_virtualization_type == "containerd" or
+           ansible_virtualization_type == "container" or
            ansible_virtualization_type == "lxc" or
            ansible_virtualization_type == "VirtualPC")
         )
@@ -145,11 +144,8 @@
       ansible.builtin.service:
         name: auditd
         masked: yes
-      when: >
-        not (ansible_virtualization_type is defined and (
-          ansible_virtualization_type == "docker" or ansible_virtualization_type =:  "containerd"
-          )
-        )
+      when:
+        - not is_container|bool
     - name: Ensure auditd is present
       ansible.builtin.package:
         name: "{{ _osquery_auditd_pkg }}"
@@ -191,12 +187,8 @@
 - name: Import selinux-end
   ansible.builtin.import_tasks: selinux-end.yml
   when: >
-    not (ansible_virtualization_type is defined and
-          (ansible_virtualization_type == "lxc" or ansible_virtualization_type == "docker" or
-          ansible_virtualization_type == "containerd"
-          )
-        ) and
-    ansible_os_family == "RedHat"
+    not is_container|bool
+    and ansible_os_family == "RedHat"
 
 - name: Import reporting
   ansible.builtin.import_tasks: reporting.yml

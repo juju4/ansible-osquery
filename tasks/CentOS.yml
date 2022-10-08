@@ -17,10 +17,5 @@
 
 - name: Import selinux
   ansible.builtin.import_tasks: selinux.yml
-  when: >
-    not (ansible_virtualization_type is defined and
-          (ansible_virtualization_type == "lxc" or ansible_virtualization_type == "docker" or
-           ansible_virtualization_type == "containerd" or
-           ansible_virtualization_type == "container"
-          )
-        )
+  when:
+    - not is_container|bool

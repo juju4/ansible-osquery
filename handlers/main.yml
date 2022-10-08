@@ -3,25 +3,19 @@
 
 - name: Reload osqueryd apparmor profile
   ansible.builtin.shell: cat /etc/apparmor.d/usr.bin.osqueryd | sudo apparmor_parser -r
-  when: >
-    not (ansible_virtualization_type is defined and
-          (ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd")
-        )
+  when:
+    - not is_container|bool
 
 - name: Reload systemd
   ansible.builtin.systemd:
     daemon_reload: yes
-  when: >
-    not (ansible_virtualization_type is defined and
-          (ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd")
-        )
+  when:
+    - not is_container|bool
 
 - name: Restart osquery
   ansible.builtin.shell: "systemctl stop osqueryd; sleep 5; systemctl start osqueryd"  # noqa command-instead-of-module
-  when: >
-    not (ansible_virtualization_type is defined and
-          (ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd")
-        )
+  when:
+    - not is_container|bool
 
 - name: Restart osquery - docker
   ansible.builtin.service:
@@ -29,19 +23,15 @@
     state: restarted
     sleep: 5
     use: service
-  when: >
-    (ansible_virtualization_type is defined and
-          (ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd")
-    )
+  when:
+    - is_container|bool
 
 - name: Restart rsyslog
   ansible.builtin.service:
     name: rsyslog
     state: restarted
-  when: >
-    not (ansible_virtualization_type is defined and
-          (ansible_virtualization_type == "docker" or ansible_virtualization_type =:  "containerd")
-        )
+  when:
+    - not is_container|bool
 
 - name: Restart rsyslog - docker
   ansible.builtin.service:
@@ -49,5 +39,5 @@
     state: restarted
     use: service
   when:
-    - (ansible_virtualization_type is defined and (ansible_virtualization_type == "docker" or ansible_virtualization_type ==  "containerd"))
+    - is_container|bool
     - not (ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 7)

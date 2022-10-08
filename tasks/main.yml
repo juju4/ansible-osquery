@@ -72,16 +72,12 @@
         - osquery
         - service
       when: >
-            osquery_service_enable | bool and
-            not (ansible_virtualization_type is defined and
-                  (ansible_virtualization_type == "containerd" or ansible_virtualization_type == "docker")
-                )
+        osquery_service_enable | bool and
+        not is_container|bool
     - name: Service
       when: >
-            osquery_service_enable | bool and
-            (ansible_virtualization_type is defined and
-                  (ansible_virtualization_type == "containerd" or ansible_virtualization_type == "docker")
-                )
+        osquery_service_enable | bool and
+        not is_container|bool
       block:
         - name: Docker | Check if osqueryd process
           ansible.builtin.command: pgrep -u root osqueryd

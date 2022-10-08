@@ -11,17 +11,20 @@
   tags:
     - osquery
 
-- import_tasks: CentOS.yml
+- name: Import CentOS
+  ansible.builtin.import_tasks: CentOS.yml
   when: ansible_os_family == "RedHat"
   tags:
     - osquery
 
-- import_tasks: Debian.yml
+- name: Import debian
+  ansible.builtin.import_tasks: Debian.yml
   when: ansible_os_family == "Debian"
   tags:
     - osquery
 
 - name: RedHat or Debian
+  when: ansible_os_family == "RedHat" or ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
   block:
     - name: Install osquery
       ansible.builtin.package:
@@ -44,21 +47,27 @@
       register: pkg_result
       until: pkg_result is success
 
-    - import_tasks: systemd.yml
+    - name: Import systemd
+      ansible.builtin.import_tasks: systemd.yml
       when: osquery_systemd_restriction_enable | bool
 
-    - import_tasks: configure.yml
+    - name: Import configure
+      ansible.builtin.import_tasks: configure.yml
       tags:
         - osquery
         - config
 
     - name: Enable service
-      ansible.builtin.service: name=osqueryd enabled={{ osquery_service_enable | bool }}
+      ansible.builtin.service:
+        name: "osqueryd"
+        enabled: "{{ osquery_service_enable | bool }}"
       tags:
         - osquery
         - service
     - name: Start service
-      ansible.builtin.service: name=osqueryd state=started
+      ansible.builtin.service:
+        name: osqueryd
+        state: started
       tags:
         - osquery
         - service
@@ -68,6 +77,11 @@
                   (ansible_virtualization_type == "containerd" or ansible_virtualization_type == "docker")
                 )
     - name: Service
+      when: >
+            osquery_service_enable | bool and
+            (ansible_virtualization_type is defined and
+                  (ansible_virtualization_type == "containerd" or ansible_virtualization_type == "docker")
+                )
       block:
         - name: Docker | Check if osqueryd process
           ansible.builtin.command: pgrep -u root osqueryd
@@ -80,32 +94,28 @@
             - osquery
             - service
           when: pgrep.rc != 0
-      when: >
-            osquery_service_enable | bool and
-            (ansible_virtualization_type is defined and
-                  (ansible_virtualization_type == "containerd" or ansible_virtualization_type == "docker")
-                )
+    - name: Import symlink-loop
+      ansible.builtin.import_tasks: symlink-loop.yml
 
-    - import_tasks: symlink-loop.yml
-
-    - import_tasks: reporting.yml
+    - name: Import reporting
+      ansible.builtin.import_tasks: reporting.yml
       when: osquery_reporting
-  when: ansible_os_family == "RedHat" or ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
 
 - name: Testing
+  when: ansible_os_family == "RedHat" or ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
   block:
-    - import_tasks: testing.yml
+    - name: Import testing
+      ansible.builtin.import_tasks: testing.yml
       when: osquery_testing | bool
 
-    - import_tasks: profiling.yml
+    - name: Import profiling
+      ansible.builtin.import_tasks: profiling.yml
       when: osquery_profiling | bool
 
     - name: Pause a bit to have few queries results
       ansible.builtin.pause:
         seconds: 80
       when: osquery_testing_pause or osquery_testing | bool
-
-  when: ansible_os_family == "RedHat" or ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"

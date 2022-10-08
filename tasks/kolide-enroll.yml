@@ -12,4 +12,6 @@
   no_log: "{{ osquery_nolog | default(true) }}"
 
 - name: Debug | osquery_enroll_secret
-  ansible.builtin.debug: var=osquery_enroll_secret verbosity=2
+  ansible.builtin.debug:
+    var: osquery_enroll_secret
+    verbosity: 2

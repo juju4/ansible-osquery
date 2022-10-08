@@ -1,12 +1,15 @@
 ---
 
-- import_tasks: kolide-enroll.yml
+- name: Import kolide-enroll
+  ansible.builtin.import_tasks: kolide-enroll.yml
   when: kolide_local_enroll
 
 - name: Check if osquery is present
-  ansible.builtin.stat: path=/etc/osquery
+  ansible.builtin.stat:
+    path: /etc/osquery
   register: has_osquery
 - name: Osquery present
+  when: has_osquery.stat.exists
   block:
     - name: Ensure directories exist
       ansible.builtin.file:
@@ -26,9 +29,11 @@
         - Restart osquery
         - Restart osquery - docker
     - name: Debug | osquery_packs
-      ansible.builtin.debug: var=osquery_packs
+      ansible.builtin.debug:
+        var: osquery_packs
 
-    - import_tasks: yara.yml
+    - name: Import yara
+      ansible.builtin.import_tasks: yara.yml
       when: osquery_yara
 
     - name: Configure osquery
@@ -76,6 +81,7 @@
       register: confcheck
       failed_when: "'error' in confcheck.stdout or 'fail' in confcheck.stdout"
     - name: Logrotate
+      when: osquery_logrotate | bool
       block:
         - name: Ensure logrotate package is present
           ansible.builtin.package:
@@ -90,9 +96,11 @@
             mode: '0644'
             backup: "{{ osquery_backup | default(false) }}"
             validate: 'logrotate -dv %s'
-      when: osquery_logrotate | bool
     - name: Ensure service is enabled and started
-      ansible.builtin.service: name=osqueryd state=started enabled=yes
+      ansible.builtin.service:
+        name: osqueryd
+        state: started
+        enabled: yes
       when: >
         not (ansible_virtualization_type is defined and
           (ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd")
@@ -100,12 +108,21 @@
     - name: Set fact for monit
       ansible.builtin.set_fact:
         monit_osqueryd: true
-  when: has_osquery.stat.exists
 
 - name: FIM
+  when: >
+    osquery_fim and
+    not (ansible_virtualization_type is defined and
+          (ansible_virtualization_type == "docker" or
+           ansible_virtualization_type == "containerd" or
+           ansible_virtualization_type == "lxc" or
+           ansible_virtualization_type == "VirtualPC")
+        )
   block:
     - name: Debug | ansible_virtualization_type
-      ansible.builtin.debug: var=ansible_virtualization_type verbosity=1
+      ansible.builtin.debug:
+        var: ansible_virtualization_type
+        verbosity: 1
     - name: Review inotify sysctl settings for osquery
       ansible.posix.sysctl:
         name: "{{ item.n }}"
@@ -118,24 +135,19 @@
         - { n: 'fs.inotify.max_user_watches', v: '524288' }
         - { n: 'fs.inotify.max_user_instances', v: '1048576', f: '/etc/sysctl.d/10-lxd-inotify.conf' }
         - { n: 'fs.inotify.max_queued_events', v: '32768' }
-  when: >
-    osquery_fim and
-    not (ansible_virtualization_type is defined and
-          (ansible_virtualization_type == "docker" or
-           ansible_virtualization_type == "containerd" or
-           ansible_virtualization_type == "lxc" or
-           ansible_virtualization_type == "VirtualPC")
-        )
 
 ## ensure no auditd at the same time
 ## https://osquery.readthedocs.io/en/stable/deployment/process-auditing/
 - name: Process auditing
+  when: osquery_process_auditing | bool
   block:
     - name: Ensure auditd service is disabled and masked
-      ansible.builtin.service: name=auditd masked=yes
+      ansible.builtin.service:
+        name: auditd
+        masked: yes
       when: >
         not (ansible_virtualization_type is defined and (
-          ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd"
+          ansible_virtualization_type == "docker" or ansible_virtualization_type =:  "containerd"
           )
         )
     - name: Ensure auditd is present
@@ -144,7 +156,6 @@
         state: present
       register: pkg_result
       until: pkg_result is success
-  when: osquery_process_auditing | bool
 
 - name: Gather package facts
   ansible.builtin.package_facts:
@@ -155,10 +166,13 @@
     rsyslog_v: "{{ ansible_facts.packages['rsyslog'][0]['version'] }}"
 
 - name: Debug | rsyslog version
-  ansible.builtin.debug: var=rsyslog_v verbosity=1
+  ansible.builtin.debug:
+    var: rsyslog_v
+    verbosity: 1
 
 # https://osquery.readthedocs.io/en/stable/deployment/syslog/
 - name: Rsyslog
+  when: osquery_rsyslog | bool
   block:
     - name: Setup rsyslog pipe for osquery communication
       ansible.builtin.template:
@@ -169,12 +183,13 @@
       notify:
         - Restart rsyslog
         - Restart rsyslog - docker
-  when: osquery_rsyslog | bool
 
-- import_tasks: syslog-target.yml
+- name: Import syslog-target
+  ansible.builtin.import_tasks: syslog-target.yml
   when: osquery_syslog_target is defined and osquery_syslog_target
 
-- import_tasks: selinux-end.yml
+- name: Import selinux-end
+  ansible.builtin.import_tasks: selinux-end.yml
   when: >
     not (ansible_virtualization_type is defined and
           (ansible_virtualization_type == "lxc" or ansible_virtualization_type == "docker" or
@@ -183,5 +198,6 @@
         ) and
     ansible_os_family == "RedHat"
 
-- import_tasks: reporting.yml
+- name: Import reporting
+  ansible.builtin.import_tasks: reporting.yml
   when: osquery_reporting

@@ -1,6 +1,7 @@
 ---
 
 - name: FIM
+  when: osquery_testing_fimfiles or osquery_testing_fim_load
   block:
     - name: Ensure directory exists - before osquery start for inotify
       ansible.builtin.file:
@@ -14,13 +15,18 @@
         - Restart osquery
     - name: Flush handlers
       ansible.builtin.meta: flush_handlers
-  when: osquery_testing_fimfiles or osquery_testing_fim_load
 
 - name: Pause a bit
   ansible.builtin.pause:
     seconds: 10
 
 - name: Systemd
+  when: >
+    ansible_service_mgr == "systemd" and
+    not (ansible_virtualization_type is defined and (
+      ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd"
+      )
+    )
   block:
     - name: Systemd | check service status
       ansible.builtin.command: "systemctl status osqueryd -l"
@@ -29,14 +35,10 @@
       args:
         warn: false
     - name: Debug | systemctl output
-      ansible.builtin.debug: var=systemctl.stdout_lines
-  when: >
-    ansible_service_mgr == "systemd" and
-    not (ansible_virtualization_type is defined and (
-      ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd"
-      )
-    )
+      ansible.builtin.debug:
+        var: systemctl.stdout_lines
 - name: Service
+  when: ansible_service_mgr == "service"
   block:
     - name: Service | check service status
       ansible.builtin.command: "service osqueryd status"
@@ -45,10 +47,11 @@
       changed_when: false
       register: service
     - name: Debug | service output
-      ansible.builtin.debug: var=service.stdout_lines
-  when: ansible_service_mgr == "service"
+      ansible.builtin.debug:
+        var: service.stdout_lines
 
 - name: Fim/Load
+  when: osquery_testing_fimfiles or osquery_testing_fim_load
   block:
     - name: Ensure directory exists
       ansible.builtin.file:
@@ -72,9 +75,9 @@
         - /var/tmp/fim-testing-b/.c/d
         - /fim-testing-a/fim-testing-b/fim-testing-c
         - /fim-testing-dir
-  when: osquery_testing_fimfiles or osquery_testing_fim_load
 
 - name: FIM
+  when: osquery_testing_fimfiles
   block:
     - name: Create files normally excluded
       ansible.builtin.file:
@@ -114,9 +117,9 @@
         state: touch
         mode: '0644'
       with_items: "{{ osquery_testing_fim_files }}"
-  when: osquery_testing_fimfiles
 
 - name: Load
+  when: osquery_testing_fim_load
   block:
     - name: Fallocate big file
       ansible.builtin.command: "fallocate {{ osquery_fallocate_args | default('') }} -l {{ osquery_testing_fim_load_bigger }} /etc/testing-big-file"
@@ -149,7 +152,6 @@
       ignore_errors: true
       changed_when: false
       register: log
-  when: osquery_testing_fim_load
 
 - name: Get eicar file to check yara rules
   ansible.builtin.get_url:

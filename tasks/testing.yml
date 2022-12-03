@@ -29,8 +29,6 @@
       ansible.builtin.command: "systemctl status osqueryd -l"
       changed_when: false
       register: systemctl
-      args:
-        warn: false
     - name: Debug | systemctl output
       ansible.builtin.debug:
         var: systemctl.stdout_lines

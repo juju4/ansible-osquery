@@ -2,71 +2,71 @@
 
 - hosts: all
   vars:
-    - osquery_testing: true
-    - osquery_testing_cleanup: true
-    - osquery_profiling: true
-    - osquery_testing_fim_load: true
-    - osquery_fim_filepaths:
-        - name: homes_sshdir
-          list:
-            - "/root/.ssh/%%"
-            - "/home/%/.ssh/%%"
-        - name: etc
-          list:
-            - "/etc/%%"
-        - name: tmp
-          list:
-            - "/tmp/%%"
-        - name: bin
-          list:
-            - "/bin/%%"
-            - "/sbin/%%"
-            - "/usr/bin/%%"
-            - "/usr/sbin/%%"
-            - "/usr/local/bin/%%"
-            - "/usr/local/sbin/%%"
-            - "/opt/bin/%%"
-            - "/opt/sbin/%%"
-        - name: boot
-          list:
-            - "/boot/%%"
-        - name: lib
-          list:
-            - "/lib/%%"
-            - "/lib64/%%"
-            - "/usr/lib/%%"
-            - "/usr/lib64/%%"
-            - "/usr/local/lib/%%"
-            - "/opt/lib/%%"
-        - name: lost+found
-          list:
-            - "/lost+found/%"
-        - name: root
-          list:
-            - "/%"
-        - name: roothome
-          list:
-            - "/root/%%"
-        - name: tmpa
-          list:
-            - "/var/tmp/a/.%"
-        - name: tmpb
-          list:
-            - "/var/tmp/b/.%%"
-        - name: webroot
-          list:
-            - "/var/www/%%"
-    - osquery_fim_excludepaths:
-        - name: tmp
-          list:
-            - /tmp/too_many_events/
-            - /tmp/too_many_events2/%%
-            - /tmp/too_many_events3/%
-            # - /tmp/excluded1-%
-            # - /tmp/%-excluded2
-            # - /tmp/excluded3-%-testing
-            # - /tmp/excluded4-%-testing-%-testing-%
-            - /tmp/excluded5-exact-match
-            # - /tmp/excluded6-%%
+    osquery_testing: true
+    osquery_testing_cleanup: true
+    osquery_profiling: true
+    osquery_testing_fim_load: true
+    osquery_fim_filepaths:
+      - name: homes_sshdir
+        list:
+          - "/root/.ssh/%%"
+          - "/home/%/.ssh/%%"
+      - name: etc
+        list:
+          - "/etc/%%"
+      - name: tmp
+        list:
+          - "/tmp/%%"
+      - name: bin
+        list:
+          - "/bin/%%"
+          - "/sbin/%%"
+          - "/usr/bin/%%"
+          - "/usr/sbin/%%"
+          - "/usr/local/bin/%%"
+          - "/usr/local/sbin/%%"
+          - "/opt/bin/%%"
+          - "/opt/sbin/%%"
+      - name: boot
+        list:
+          - "/boot/%%"
+      - name: lib
+        list:
+          - "/lib/%%"
+          - "/lib64/%%"
+          - "/usr/lib/%%"
+          - "/usr/lib64/%%"
+          - "/usr/local/lib/%%"
+          - "/opt/lib/%%"
+      - name: lost+found
+        list:
+          - "/lost+found/%"
+      - name: root
+        list:
+          - "/%"
+      - name: roothome
+        list:
+          - "/root/%%"
+      - name: tmpa
+        list:
+          - "/var/tmp/a/.%"
+      - name: tmpb
+        list:
+          - "/var/tmp/b/.%%"
+      - name: webroot
+        list:
+          - "/var/www/%%"
+    osquery_fim_excludepaths:
+      - name: tmp
+        list:
+          - /tmp/too_many_events/
+          - /tmp/too_many_events2/%%
+          - /tmp/too_many_events3/%
+          # - /tmp/excluded1-%
+          # - /tmp/%-excluded2
+          # - /tmp/excluded3-%-testing
+          # - /tmp/excluded4-%-testing-%-testing-%
+          - /tmp/excluded5-exact-match
+          # - /tmp/excluded6-%%
   roles:
     - juju4.osquery

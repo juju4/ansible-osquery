@@ -2,12 +2,12 @@
 
 - hosts: all
   vars:
-    - osquery_process_auditing: true
-    - osquery_flags:
-        # from `osqueryi --help`
-        - '--audit_allow_fim_events'
-        - '--audit_allow_selinux_events'
-        # - '--audit_debug'
-        - '--events_max=5000'
+    osquery_process_auditing: true
+    osquery_flags:
+      # from `osqueryi --help`
+      - '--audit_allow_fim_events'
+      - '--audit_allow_selinux_events'
+      # - '--audit_debug'
+      - '--events_max=5000'
   roles:
     - juju4.osquery

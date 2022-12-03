@@ -1,5 +1,7 @@
 {{ ansible_managed | comment }}
 --pidfile=/var/run/osqueryd.pid
+--config_plugin={{ osquery_config_plugin }}
+--logger_plugin={{ osquery_logger_plugin }}
 {% for flag in osquery_flags %}
 {{ flag }}
 {% endfor %}

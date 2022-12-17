@@ -66,6 +66,11 @@ jobs:
           systemctl status osqueryd || true
         if: ${{ always() }}
         continue-on-error: true
+      - name: After script - files
+        run: |
+          dpkg -L osquery
+        if: ${{ always() }}
+        continue-on-error: true
       - name: After script - osquery
         run: |
           cat /etc/osquery/osquery.conf || true

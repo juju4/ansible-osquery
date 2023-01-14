@@ -32,5 +32,8 @@
   failed_when: |
     aa_status.rc != 0 and
     "Warning: unable to find a suitable fs in /proc/mounts, is it mounted?" not in aa_status.stderr
+  # required on Debian
+  environment:
+    PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 # Refine policy with `aa-logprof -f /var/log/syslog`

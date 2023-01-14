@@ -8,6 +8,8 @@ _apt_keyserver: "{{ apt_keyserver | default('keyserver.ubuntu.com') }}"
 osquery_packages:
   - osquery
   - rsyslog
+  # for osquery reports
+  - jq
 
 osquery_debug_packages:
   - osquery-dbg

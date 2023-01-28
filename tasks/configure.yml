@@ -96,6 +96,8 @@
             mode: '0644'
             backup: "{{ osquery_backup | default(false) }}"
             validate: 'logrotate -dv %s'
+          environment:
+            PATH: /usr/sbin:/usr/bin:/sbin:/bin
     - name: Ensure service is enabled and started
       ansible.builtin.service:
         name: osqueryd

@@ -17,11 +17,10 @@ jobs:
       matrix:
         python-version: [3.8]
         molecule_distro:
-          - 'redhat/ubi8'
+          - 'rockylinux:9'
           - 'rockylinux:8'
-          - 'centos:7'
+          - 'ubuntu:22.04'
           - 'ubuntu:20.04'
-          - 'ubuntu:18.04'
     env:
       ANSIBLE_CALLBACKS_ENABLED: profile_tasks
       MOLECULE_NO_LOG: "false"

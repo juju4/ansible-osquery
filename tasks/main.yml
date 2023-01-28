@@ -67,6 +67,9 @@
       tags:
         - osquery
         - service
+      when: >
+        osquery_service_enable | bool and
+        not is_container|bool
     - name: Start service
       ansible.builtin.service:
         name: osqueryd
@@ -80,7 +83,7 @@
     - name: Service
       when: >
         osquery_service_enable | bool and
-        not is_container|bool
+        is_container|bool
       block:
         - name: Docker | Check if osqueryd process
           ansible.builtin.command: pgrep -u root osqueryd

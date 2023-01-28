@@ -23,6 +23,9 @@
   tags:
     - osquery
 
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+
 - name: RedHat or Debian
   when: ansible_os_family == "RedHat" or ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
   block:

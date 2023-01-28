@@ -41,3 +41,7 @@
   when:
     - is_container|bool
     - not (ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 7)
+
+- name: Refresh apt cache
+  ansible.builtin.apt:
+    update_cache: yes

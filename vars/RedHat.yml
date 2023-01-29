@@ -4,6 +4,7 @@
 osquery_packages:
   - osquery
   - rsyslog
+  - procps-ng
   - libselinux-python
 
 osquery_debug_packages:

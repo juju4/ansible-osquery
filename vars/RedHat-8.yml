@@ -4,6 +4,7 @@
 osquery_packages:
   - osquery
   - rsyslog
+  - procps-ng
 
 osquery_debug_packages:
   - osquery-debuginfo

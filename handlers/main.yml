@@ -18,7 +18,7 @@
     - not is_container|bool
 
 - name: Restart osquery - docker
-  ansible.builtin.shell: "killall osqueryd; sleep 5; /usr/bin/osqueryd --flagfile /etc/osquery/osquery.flags --config_path /etc/osquery/osquery.conf"
+  ansible.builtin.shell: "pkill osqueryd; sleep 5; /usr/bin/osqueryd --flagfile /etc/osquery/osquery.flags --config_path /etc/osquery/osquery.conf"
   when:
     - is_container|bool
 

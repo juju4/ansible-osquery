@@ -10,6 +10,8 @@ osquery_packages:
   - rsyslog
   # for osquery reports
   - jq
+  # pkill
+  - procps
 
 osquery_debug_packages:
   - osquery-dbg

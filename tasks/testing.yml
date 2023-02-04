@@ -37,8 +37,6 @@
   block:
     - name: Service | check service status
       ansible.builtin.command: "service osqueryd status"
-      args:
-        warn: false
       changed_when: false
       register: service
     - name: Debug | service output

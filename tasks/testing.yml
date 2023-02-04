@@ -35,7 +35,7 @@
 - name: Service
   when: ansible_service_mgr == "service"
   block:
-    - name: Service | check service status
+    - name: Service | check service status  # noqa command-instead-of-module
       ansible.builtin.command: "service osqueryd status"
       changed_when: false
       register: service

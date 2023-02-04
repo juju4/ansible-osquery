@@ -33,7 +33,9 @@
       ansible.builtin.debug:
         var: systemctl.stdout_lines
 - name: Service
-  when: ansible_service_mgr == "service"
+  when:
+    - ansible_service_mgr == "service"
+    - not (ansible_os_family == "RedHat" and ansible_distribution_major_version|int == 9)
   block:
     - name: Service | check service status  # noqa command-instead-of-module
       ansible.builtin.command: "service osqueryd status"

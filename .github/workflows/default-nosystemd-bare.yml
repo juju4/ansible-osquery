@@ -21,6 +21,7 @@ jobs:
         os: [ubuntu-latest, ubuntu-20.04]
     env:
       ANSIBLE_CALLBACKS_ENABLED: profile_tasks
+      ANSIBLE_EXTRA_VARS: "-e osquery_systemd_restriction_enable=false"
 
     steps:
       - uses: actions/checkout@v3
@@ -51,13 +52,13 @@ jobs:
           find -ls
       - name: run test
         run: |
-          cd $GITHUB_WORKSPACE/juju4.osquery && ansible-playbook -i localhost, --connection=local --become -vvv molecule/default/converge.yml
+          cd $GITHUB_WORKSPACE/juju4.osquery && ansible-playbook -i localhost, --connection=local --become -vvv molecule/default/converge.yml ${ANSIBLE_EXTRA_VARS}
         env:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
       - name: idempotency run
         run: |
-          cd $GITHUB_WORKSPACE/juju4.osquery && ansible-playbook -i localhost, --connection=local --become -vvv molecule/default/converge.yml | tee /tmp/idempotency.log | grep -q 'changed=0.*failed=0'  && (echo 'Idempotence test: pass' && exit 0)  || (echo 'Idempotence test: fail' && cat /tmp/idempotency.log && exit 1)
+          cd $GITHUB_WORKSPACE/juju4.osquery && ansible-playbook -i localhost, --connection=local --become -vvv molecule/default/converge.yml ${ANSIBLE_EXTRA_VARS} | tee /tmp/idempotency.log | grep -q 'changed=0.*failed=0'  && (echo 'Idempotence test: pass' && exit 0)  || (echo 'Idempotence test: fail' && cat /tmp/idempotency.log && exit 1)
         continue-on-error: true
       - name: On failure
         run: |
@@ -65,14 +66,9 @@ jobs:
         if: env.WORKFLOW_CONCLUSION == 'failure'  # notify only if failure
       - name: After script - systemctl
         run: |
-          systemd-analyze security osquery || true
+          systemd-analyze security osqueryd || true
           systemctl --failed || true
           systemctl status osqueryd || true
-        if: ${{ always() }}
-        continue-on-error: true
-      - name: After script - files
-        run: |
-          dpkg -L osquery
         if: ${{ always() }}
         continue-on-error: true
       - name: After script - osquery

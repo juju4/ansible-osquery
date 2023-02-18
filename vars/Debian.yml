@@ -21,6 +21,6 @@ _osquery_repositorykey: "{{ osquery_repositorykey | default('1484120AC4E9F8A1A57
 
 _osquery_auditd_pkg: "auditd"
 
-syslog_user: syslog
-varlog_group: syslog
+syslog_user: root
+varlog_group: root
 varlog_mode: '0775'

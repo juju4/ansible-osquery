@@ -96,3 +96,8 @@
           '\"target_path\":\"\/fim-testing-a\/fim-testing-b\/fim-testing-c\/fim-testing11' not in res['content'] | b64decode
           "
       when: resfile.stat.exists
+
+    - name: /var/log/osquery/osqueryd.results.logs fim extract
+      ansible.builtin.command: grep fim /var/log/osquery/osqueryd.results.logs | tail -50
+      changed_when: false
+      ignore_errors: true

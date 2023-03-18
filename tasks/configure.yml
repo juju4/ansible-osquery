@@ -145,6 +145,7 @@
     - name: Ensure auditd service is disabled and masked
       ansible.builtin.service:
         name: auditd
+        enabled: no
         masked: yes
       when:
         - not is_container|bool

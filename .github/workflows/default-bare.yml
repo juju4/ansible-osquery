@@ -77,6 +77,7 @@ jobs:
         continue-on-error: true
       - name: After script - osquery
         run: |
+          set -x
           cat /etc/osquery/osquery.conf || true
           osqueryi --config_dump --verbose
           osqueryi --config_check --verbose
@@ -89,6 +90,9 @@ jobs:
         continue-on-error: true
       - name: After script - osquery results logs
         run: |
+          set -x
+          ls -lAF /var/log/osquery/
+          sudo head -10 /var/log/osquery/osqueryd.results.log
           sudo tail -100 /var/log/osquery/osqueryd.results.log
         if: ${{ always() }}
         continue-on-error: true

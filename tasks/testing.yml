@@ -1,5 +1,21 @@
 ---
 
+- name: Process activity
+  when: osquery_testing_process_activity
+  block:
+    - name: Make few cli calls
+      ansible.builtin.command:
+        dest: "{{ item }}"
+        state: directory
+        mode: '0755'
+      changed_when: false
+      loop:
+        - ps
+        - sudo -n ps
+        - whoami
+        - ifconfig
+        - screen -dm bash -c 'echo CMD1; echo CMD2; ps aux --forest;'
+
 - name: FIM
   when: osquery_testing_fimfiles or osquery_testing_fim_load
   block:

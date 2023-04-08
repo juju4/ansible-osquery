@@ -9,6 +9,7 @@
   remote_user: root
   vars:
     osquery_testing: true
+    osquery_testing_process_activity: true
     osquery_testing_yara: true
   pre_tasks:
     - name: Ubuntu | Install python3

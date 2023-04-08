@@ -5,9 +5,7 @@
   block:
     - name: Make few cli calls
       ansible.builtin.command:
-        dest: "{{ item }}"
-        state: directory
-        mode: '0755'
+        cmd: "{{ item }}"
       changed_when: false
       loop:
         - ps

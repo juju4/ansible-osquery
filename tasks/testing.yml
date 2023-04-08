@@ -7,6 +7,7 @@
       ansible.builtin.command:
         cmd: "{{ item }}"
       changed_when: false
+      failed_when: false
       loop:
         - ps
         - sudo -n ps

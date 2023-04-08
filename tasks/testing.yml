@@ -1,5 +1,9 @@
 ---
 
+- name: Pause a bit
+  ansible.builtin.pause:
+    seconds: 90
+
 - name: Process activity
   when: osquery_testing_process_activity
   block:

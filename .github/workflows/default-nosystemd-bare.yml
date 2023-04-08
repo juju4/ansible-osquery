@@ -1,5 +1,5 @@
 ---
-name: default-bare
+name: default-nosystemd-bare
 
 on:
   push:

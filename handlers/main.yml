@@ -33,7 +33,6 @@
   ansible.builtin.service:
     name: rsyslog
     state: restarted
-    use: service
   when:
     - is_container|bool
     - not (ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 7)

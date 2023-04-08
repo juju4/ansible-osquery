@@ -66,6 +66,13 @@ jq -r 'select(.name == "fim") | .columns.target_path + " " + .columns.action' "$
 echo
 echo
 
+echo "** Open files"
+jq -r 'select(.name == "pack_osquery-custom-pack_process_open_files") | .columns.username + " " + .columns.name + " " + .columns.path' "${f}" | sort | uniq -c | sort -nr
+echo "** Open sockets"
+jq -r 'select(.name == "pack_osquery-custom-pack_process_open_sockets") | .columns.username + " " + .columns.name + " " + .columns.remote_address' "${f}" | sort | uniq -c | sort -nr
+echo
+echo
+
 echo "** Snapshots Queries name"
 jq -r '.name' "$f2" | sort | uniq -c | sort -nr
 echo "** Snapshots system controls"

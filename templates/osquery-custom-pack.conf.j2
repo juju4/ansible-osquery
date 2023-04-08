@@ -50,17 +50,17 @@
     "fileless_process": {
       "query" : "SELECT name, path, pid FROM processes WHERE on_disk = 0;",
       "description" : "Retrieves interface details.",
-      "interval" : "300"
+      "interval" : "{{ osquery_process_interval }}"
     },
     "processes": {
       "query": "SELECT p1.pid, p1.name, p1.path, p1.cmdline, p1.uid, p1.euid, u.username, p1.parent, p2.name, p2.cmdline as pcmdline from processes as p1, processes as p2, users as u where p1.parent == p2.pid and p1.uid == u.uid;",
       "description": "Retrieve list of processes",
-      "interval": "300"
+      "interval" : "{{ osquery_process_interval }}"
     },
     "process_binding_to_ports": {
       "query" : "select DISTINCT process.name, listening.port, listening.protocol, process.pid FROM processes as process JOIN listening_ports AS listening ON process.pid=listening.pid;",
       "description" : "Retrieves the list of processes bound to listening ports.",
-      "interval" : "300"
+      "interval" : "{{ osquery_process_interval }}"
     },
     "process_env": {
       "query" : "select p1.pid, key, value, p2.cmdline from process_envs as p1, processes as p2 where p1.pid == p2.pid and key!='LS_COLORS' and key!='TERMCAP';",
@@ -73,17 +73,17 @@
     "process_open_files": {
       "query" : "select DISTINCT p1.name, p1.pid, p2.pid as ppid, p2.name as pname, u.username, pof.fd, pof.path FROM processes as p1, processes as p2, process_open_files as pof, users as u WHERE p1.pid==pof.pid and p1.parent==p2.pid and p1.uid == u.uid and pof.path != '/dev/null' and pof.path != '/dev/random' and pof.path != '/dev/urandom' and pof.path not like '/dev/pts/%' and pof.path not like '/dev/tty%' and pof.path not like '/var/log/%%' and pof.path not like '/var/lib/prometheus/%%' and pof.path not like '/var/snap/%%/logs/%' and pof.path not like '/var/snap/%%/mysql/%%' and pof.path not like '/var/osquery/osquery.db/%';",
       "description" : "File descriptors for each process enriched with process name, cmdline and parent name",
-      "interval" : "300"
+      "interval" : "{{ osquery_process_interval }}"
     },
     "process_open_sockets": {
       "query" : "select p1.name, p1.pid, p2.pid as ppid, p2.name as pname, u.username, pos.local_address, pos.local_port, pos.remote_address, pos.remote_port, pos.protocol, pos.path, pos.state FROM processes as p1, processes as p2, process_open_sockets as pos, users as u WHERE p1.pid==pos.pid and p1.parent==p2.pid and p1.uid == u.uid and pos.remote_address != '0.0.0.0' and pos.remote_address != '::' and not (pos.remote_address == '' and pos.path == '') and not (pos.local_address == '127.0.0.1' and pos.remote_address == '127.0.0.1') and not (pos.local_address like '10.%' and pos.remote_address like '10.%') and not (pos.local_address like '192.168.%' and pos.remote_address like '192.168.%') and pos.remote_port != 123;",
       "description" : "File sockets for each process enriched with process name, cmdline and parent name",
-      "interval" : "300"
+      "interval" : "{{ osquery_process_interval }}"
     },
     // FIXME! performance impacting! = higher interval
     "outbound_connections": {
       "query": "select user.username, p1.name, hash.md5, socket.pid, p1.path, p1.cmdline, p2.cmdline as pcmdline, socket.local_port, socket.remote_port, socket.remote_address from process_open_sockets as socket, processes as p1, processes as p2, users as user, hash as hash where socket.local_port not in (select port from listening_ports) and socket.local_port != 0 and socket.pid = p1.pid and user.uid = p1.uid and hash.path = p1.path and p1.parent == p2.pid;",
-      "interval": "3600",
+      "interval" : "{{ osquery_socket_interval }}",
       "description": ""
     },
     "python_packages": {

@@ -79,10 +79,10 @@ jobs:
         run: |
           set -x
           cat /etc/osquery/osquery.conf || true
-          osqueryi --line "SELECT version, build, platform FROM os_version;"
-          osqueryi --line "SELECT version from osquery_info;"
-          osqueryi --config_dump --verbose
-          osqueryi --config_check --verbose
+          osqueryi --line "SELECT version, build, platform FROM os_version;" || true
+          osqueryi --line "SELECT version from osquery_info;" || true
+          osqueryi --config_dump --verbose || true
+          osqueryi --config_check --verbose || true
         if: ${{ always() }}
         continue-on-error: true
       - name: After script - osquery ERROR/WARNING/INFO

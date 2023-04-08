@@ -49,3 +49,10 @@
           "'Log line format:' in warn['content'] | b64decode and
           'kernel: Cannot access /dev/osquery' not in warn['content'] | b64decode"
       when: warnfile.stat.exists
+
+    - name: Operation System
+      ansible.builtin.command: osqueryi --line "SELECT version, build, platform FROM os_version;"
+      changed_when: false
+    - name: Osquery version
+      ansible.builtin.command: osqueryi --line "SELECT version from osquery_info;"
+      changed_when: false

@@ -79,6 +79,8 @@ jobs:
         run: |
           set -x
           cat /etc/osquery/osquery.conf || true
+          osqueryi --line "SELECT version, build, platform FROM os_version;"
+          osqueryi --line "SELECT version from osquery_info;"
           osqueryi --config_dump --verbose
           osqueryi --config_check --verbose
         if: ${{ always() }}

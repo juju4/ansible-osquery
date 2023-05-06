@@ -4,6 +4,7 @@ name: default-fimfiles
 on:
   push:
   pull_request:
+  workflow_dispatch:
   schedule:  # run weekly, every monday 02:30
     - cron: '30 2 * * 1'
 

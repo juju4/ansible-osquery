@@ -76,7 +76,10 @@
         - Restart osquery
         - Restart osquery - docker
     - name: Re-validate whole osquery config
-      ansible.builtin.shell: 'echo .quit | osqueryi --config_path /etc/osquery/osquery.conf --config_check --verbose'
+      ansible.builtin.shell:
+        cmd: |
+          set -o pipefail
+          echo .quit | osqueryi --config_path /etc/osquery/osquery.conf --config_check --verbose
       changed_when: false
       register: confcheck
       failed_when: "'error' in confcheck.stdout or 'fail' in confcheck.stdout"
@@ -142,11 +145,10 @@
 - name: Process auditing
   when: osquery_process_auditing | bool
   block:
-    - name: Ensure auditd service is disabled and masked
+    - name: Ensure auditd service is disabled
       ansible.builtin.service:
         name: auditd
         enabled: no
-        masked: yes
       when:
         - not is_container|bool
     - name: Ensure auditd is present

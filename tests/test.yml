@@ -1,5 +1,7 @@
 ---
-- hosts: localhost
+
+- name: Test playbook
+  hosts: localhost
   remote_user: root
   roles:
-    - ansible-osquery
+    - juju4.osquery

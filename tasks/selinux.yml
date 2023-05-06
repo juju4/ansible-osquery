@@ -29,7 +29,8 @@
 
 # FIXME!
 - name: Generate osquery policy file
-  ansible.builtin.command: "{{ item }}"  # noqa no-handler
+  ansible.builtin.command:  # noqa no-handler no-changed-when
+    cmd: "{{ item }}"
   args:
     chdir: /etc/osquery
   with_items:

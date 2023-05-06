@@ -2,7 +2,12 @@
 # handlers file for osquery
 
 - name: Reload osqueryd apparmor profile
-  ansible.builtin.shell: cat /etc/apparmor.d/usr.bin.osqueryd | sudo apparmor_parser -r
+  ansible.builtin.shell:  # noqa no-changed-when
+    cmd: |
+      set -o pipefail
+      cat /etc/apparmor.d/usr.bin.osqueryd | sudo apparmor_parser -r
+  args:
+    executable: /bin/bash
   when:
     - not is_container|bool
 
@@ -13,12 +18,14 @@
     - not is_container|bool
 
 - name: Restart osquery
-  ansible.builtin.shell: "systemctl stop osqueryd; sleep 5; systemctl start osqueryd"  # noqa command-instead-of-module
+  ansible.builtin.shell:  # noqa command-instead-of-module no-changed-when
+    cmd: "systemctl stop osqueryd; sleep 5; systemctl start osqueryd"
   when:
     - not is_container|bool
 
 - name: Restart osquery - docker
-  ansible.builtin.shell: "pkill osqueryd; sleep 5; /usr/bin/osqueryd --flagfile /etc/osquery/osquery.flags --config_path /etc/osquery/osquery.conf --daemonize"
+  ansible.builtin.shell:  # noqa no-changed-when
+    cmd: "pkill osqueryd; sleep 5; /usr/bin/osqueryd --flagfile /etc/osquery/osquery.flags --config_path /etc/osquery/osquery.conf --daemonize"
   when:
     - is_container|bool
 

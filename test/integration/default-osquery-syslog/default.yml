@@ -1,6 +1,7 @@
 ---
 
-- hosts: all
+- name: Test integration playbook
+  hosts: all
   vars:
     # osquery_flags:
     #   - '--logger_plugin=syslog'

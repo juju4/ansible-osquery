@@ -1,6 +1,7 @@
 ---
 
-- hosts: all
+- name: Test integration playbook
+  hosts: all
   vars:
     mysql_root_password: 'Toor=2017.'
     kolide_mysql_root_pass: "{{ mysql_root_password }}"
@@ -49,17 +50,19 @@
     osquery_nolog: false
   pre_tasks:
     - name: Ubuntu | set python3-mysqldb instead of default python-mysqldb
-      set_fact:
+      ansible.builtin.set_fact:
         mysql_python_package_debian: python3-mysqldb
-      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 18)
-    - name: installing python-3 mysql libraries - geerlingguy.mysql#344
-      apt: name=python3-mysqldb state=present
-      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 18)
-    - name: map acme.kolide.co to localhost
-      lineinfile:
+      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version | int >= 18)
+    - name: Installing python-3 mysql libraries - geerlingguy.mysql#344
+      ansible.builtin.apt:
+        name: python3-mysqldb
+        state: present
+      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version | int >= 18)
+    - name: Map acme.kolide.co to localhost
+      ansible.builtin.lineinfile:
         dest: /etc/hosts
         line: 127.0.0.1 kolide
-      ignore_errors: true
+      failed_when: false
   roles:
     - geerlingguy.mysql
     - juju4.kolide

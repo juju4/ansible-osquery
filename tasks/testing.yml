@@ -141,16 +141,19 @@
         chdir: /tmp/too_many_events
         creates: /tmp/too_many_events/testing-aa
     - name: Clean up
-      ansible.builtin.shell: find /tmp/too_many_events/ -name 'testing-*' -exec rm {} \;
+      ansible.builtin.shell:  # noqa no-changed-when
+        cmd: find /tmp/too_many_events/ -name 'testing-*' -exec rm {} \;
       failed_when: false
       when: osquery_testing_cleanup
     - name: Creation of many small files
-      ansible.builtin.command: "split -b {{ osquery_testing_fim_load_smaller }} /etc/testing-big-file testing-"
+      ansible.builtin.command:
+        cmd: "split -b {{ osquery_testing_fim_load_smaller }} /etc/testing-big-file testing-"
       args:
         chdir: /etc
         creates: /etc/testing-aa
     - name: Clean up
-      ansible.builtin.shell: find /etc/ -name 'testing-*' -exec rm {} \;
+      ansible.builtin.shell:  # noqa no-changed-when
+        cmd: find /etc/ -name 'testing-*' -exec rm {} \;
       failed_when: false
       when: osquery_testing_cleanup
     # more diverse load? openssl speed, stress...

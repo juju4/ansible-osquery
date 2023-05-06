@@ -91,7 +91,8 @@
           ignore_errors: true
           register: pgrep
         - name: Docker | Start service
-          ansible.builtin.shell: nohup /usr/bin/osqueryd --flagfile /etc/osquery/osquery.flags --config_path /etc/osquery/osquery.conf &
+          ansible.builtin.shell:  # noqa no-changed-when
+            cmd: nohup /usr/bin/osqueryd --flagfile /etc/osquery/osquery.flags --config_path /etc/osquery/osquery.conf &
           tags:
             - osquery
             - service

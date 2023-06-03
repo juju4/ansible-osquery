@@ -80,6 +80,8 @@
         cmd: |
           set -o pipefail
           echo .quit | osqueryi --config_path /etc/osquery/osquery.conf --config_check --verbose
+      args:
+        executable: /bin/bash
       changed_when: false
       register: confcheck
       failed_when: "'error' in confcheck.stdout or 'fail' in confcheck.stdout"

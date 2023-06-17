@@ -37,6 +37,15 @@
       "value" : "Identify network communications that are being redirected. Example: identify if security logging has been disabled",
       "interval" : "300"
     },
+    "fim_extattr": {
+      "query" : "select f.action,f.target_path,f.mode,f.size,f.category,f.time,f.atime,f.ctime,f.mtime,f.md5,f.sha256,u.uid,u.username,ea.key,ea.value from users u, file_events f, extended_attributes ea where u.uid == f.uid and ea.path == f.target_path;",
+      "description" : "Retrieves file activity along user and extended attributes.",
+{% if osquery_testing or osquery_testing_pause %}
+      "interval": "10"
+{% else %}
+      "interval" : "300"
+{% endif %}
+    },
     "groups": {
       "query" : "select * from groups;",
       "description" : "Retrieves groups info.",

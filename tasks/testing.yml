@@ -173,6 +173,10 @@
     mode: '0644'
   when: osquery_testing_yara | bool
 
+- name: Ensure attr package is present
+  ansible.builtin.package:
+    name: attr
+    state: present
 - name: Create xattr test file
   ansible.builtin.file:
     name: /root/test-fim-xattr

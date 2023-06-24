@@ -177,11 +177,16 @@
   ansible.builtin.package:
     name: attr
     state: present
+- name: Check xattr test file
+  ansible.builtin.stat:
+    path: /root/test-fim-xattr
+  register: xattr_test
 - name: Create xattr test file
   ansible.builtin.file:
     name: /root/test-fim-xattr
     state: touch
     mode: '0644'
+  when: not xattr_test.stat.exists
 - name: Set xattr
   community.general.xattr:
     path: /root/test-fim-xattr

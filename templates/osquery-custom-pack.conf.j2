@@ -38,7 +38,7 @@
       "interval" : "300"
     },
     "fim_extattr": {
-      "query" : "select f.action,f.target_path,f.mode,f.size,f.category,f.time,f.atime,f.ctime,f.mtime,f.md5,f.sha256,u.uid,u.username,ea.key,ea.value from users u, file_events f, extended_attributes ea where u.uid == f.uid and ea.path == f.target_path;",
+      "query" : "select f.action,f.target_path,f.mode,f.size,f.category,f.time,f.atime,f.ctime,f.mtime,u.uid,u.username,ea.key,from_base64(ea.value) as value from users u, file_events f, extended_attributes ea where u.uid == f.uid and ea.path == f.target_path;",
       "description" : "Retrieves file activity along user and extended attributes.",
 {% if osquery_testing or osquery_testing_pause %}
       "interval": "10"

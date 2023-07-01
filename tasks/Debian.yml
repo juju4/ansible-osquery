@@ -16,6 +16,12 @@
   register: pkg_result
   until: pkg_result is success
 
+- name: Ensure /etc/apt/keyrings directory exists
+  ansible.builtin.file:
+    name: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
 - name: Setup osquery APT key
   ansible.builtin.get_url:
     url: https://pkg.osquery.io/deb/pubkey.gpg

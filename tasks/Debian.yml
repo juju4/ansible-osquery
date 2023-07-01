@@ -17,14 +17,24 @@
   until: pkg_result is success
 
 - name: Setup osquery APT key
-  become: yes
-  ansible.builtin.apt_key:
-    data: "{{ lookup('file', 'pgp-0x1484120AC4E9F8A1A577AEEE97A80C63C9D8B80B.asc') }}"
-    state: present
-  tags:
-    - osquery
-  register: pkg_result
-  until: pkg_result is success
+  ansible.builtin.get_url:
+    url: https://pkg.osquery.io/deb/pubkey.gpg
+    dest: /etc/apt/keyrings/osquery.asc
+    mode: 0644
+  register: dl_result
+  until: dl_result is success
+  when: proxy_url is not defined or not proxy_url | string
+
+- name: Proxy
+  when: proxy_url is defined and proxy_url | string
+  block:
+    # workaround for apt_key not supporting proxy (ansible#31691)
+    - name: Download Falco Apt signing key  # noqa command-instead-of-module
+      ansible.builtin.command: curl -sL -o /etc/apt/keyrings/osquery.asc https://pkg.osquery.io/deb/pubkey.gpg
+      args:
+        creates: /etc/apt/keyrings/osquery.asc
+      environment:
+        http_proxy: "{{ proxy_url | default(omit) }}"
 
 - name: Configure osquery APT repository
   become: yes
@@ -42,3 +52,4 @@
   ansible.builtin.import_tasks: apparmor.yml
   when:
     - not is_container|bool
+    - ansible_virtualization_type != "lxc"

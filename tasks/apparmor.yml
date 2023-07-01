@@ -16,7 +16,7 @@
 - name: Ensure apparmor profile is set
   ansible.builtin.template:
     src: apparmor-usr.bin.osqueryd.j2
-    dest: /etc/apparmor.d/usr.bin.osqueryd
+    dest: /etc/apparmor.d/opt.osquery.bin.osqueryd
     mode: '0644'
     owner: root
     group: root
@@ -25,8 +25,8 @@
     - Reload osqueryd apparmor profile
 
 - name: Apply apparmor profile for osquery
-  ansible.builtin.command: aa-complain /usr/bin/osqueryd
-  # command: aa-enforce /usr/bin/osqueryd
+  ansible.builtin.command: aa-complain /opt/osquery/bin/osqueryd
+  # command: aa-enforce /opt/osquery/bin/osqueryd
   register: aa_status
   changed_when: False
   failed_when: |

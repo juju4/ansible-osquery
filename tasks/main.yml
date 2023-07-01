@@ -92,7 +92,7 @@
           register: pgrep
         - name: Docker | Start service
           ansible.builtin.shell:  # noqa no-changed-when
-            cmd: nohup /usr/bin/osqueryd --flagfile /etc/osquery/osquery.flags --config_path /etc/osquery/osquery.conf &
+            cmd: nohup /opt/osquery/bin/osqueryd --flagfile /etc/osquery/osquery.flags --config_path /etc/osquery/osquery.conf &
           tags:
             - osquery
             - service

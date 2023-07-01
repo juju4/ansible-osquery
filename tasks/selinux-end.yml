@@ -11,7 +11,7 @@
     - name: RedHat | Ensure selinux context is correctly set
       ansible.builtin.command: "/sbin/restorecon -F -R -v {{ item }}"  # noqa no-changed-when
       with_items:
-        - /usr/bin/osqueryd
+        - /opt/osquery/bin/osqueryd
         - /usr/lib/systemd/system/osqueryd.service
         - /var/log/osquery
         - /etc/osquery

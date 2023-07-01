@@ -45,8 +45,8 @@ make -f /usr/share/selinux/devel/Makefile osquery.pp || exit
 
 # Generate a man page off the installed module
 sepolicy manpage -p . -d osquery_t
-# Fixing the file context on /usr/bin/osqueryd
-/sbin/restorecon -F -R -v /usr/bin/osqueryd
+# Fixing the file context on /opt/osquery/bin/osqueryd
+/sbin/restorecon -F -R -v /opt/osquery/bin/osqueryd
 # Fixing the file context on /usr/lib/systemd/system/osqueryd.service
 /sbin/restorecon -F -R -v /usr/lib/systemd/system/osqueryd.service
 # Fixing the file context on /var/log/osquery

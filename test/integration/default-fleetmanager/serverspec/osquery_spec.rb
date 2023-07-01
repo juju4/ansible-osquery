@@ -11,7 +11,7 @@ describe service('osqueryd') do
   it { should be_running }
 end
 
-describe file('/usr/bin/osqueryd') do
+describe file('/opt/osquery/bin/osqueryd') do
   it { should be_executable }
 end
 describe file('/usr/bin/osqueryi') do

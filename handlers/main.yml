@@ -5,7 +5,7 @@
   ansible.builtin.shell:  # noqa no-changed-when
     cmd: |
       set -o pipefail
-      cat /etc/apparmor.d/usr.bin.osqueryd | sudo apparmor_parser -r
+      cat /etc/apparmor.d/opt.osquery.bin.osqueryd | sudo apparmor_parser -r
   args:
     executable: /bin/bash
   when:
@@ -25,7 +25,7 @@
 
 - name: Restart osquery - docker
   ansible.builtin.shell:  # noqa no-changed-when
-    cmd: "pkill osqueryd; sleep 5; /usr/bin/osqueryd --flagfile /etc/osquery/osquery.flags --config_path /etc/osquery/osquery.conf --daemonize"
+    cmd: "pkill osqueryd; sleep 5; /opt/osquery/bin/osqueryd --flagfile /etc/osquery/osquery.flags --config_path /etc/osquery/osquery.conf --daemonize"
   when:
     - is_container|bool
 

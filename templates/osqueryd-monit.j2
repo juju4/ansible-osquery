@@ -19,7 +19,7 @@ check process osqueryd
   depends on osqueryd_conf
 
 check file osqueryd_binary
-  with path /usr/bin/osqueryd
+  with path /opt/osquery/bin/osqueryd
   group osqueryd
   if failed checksum then alert
 

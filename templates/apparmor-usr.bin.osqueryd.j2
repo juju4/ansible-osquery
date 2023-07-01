@@ -1,11 +1,11 @@
 {{ ansible_managed | comment }}
 #include <tunables/global>
 
-/usr/bin/osqueryd {
+/opt/osquery/bin/osqueryd {
   #include <abstractions/base>
 
   # https://gitlab.com/apparmor/apparmor/-/wikis/TechnicalDoc_Proc_and_ptrace
-  ptrace (trace) peer=/usr/bin/osqueryd,
+  ptrace (trace) peer=/opt/osquery/bin/osqueryd,
   deny ptrace (read, readby, tracedby),
 
   /etc/host.conf r,
@@ -27,7 +27,7 @@
   /tmp/user/0/osqueryd.*.root.log.ERROR.* w,
   /tmp/user/0/osqueryd.*.root.log.INFO.* w,
   /tmp/user/0/osqueryd.*.root.log.WARNING.* w,
-  /usr/bin/osqueryd Px,
+  /opt/osquery/bin/osqueryd Px,
   /opt/osquery/share/osquery/packs/* r,
   /var/log/osquery/* w,
   /var/osquery/osquery.db/ rw,

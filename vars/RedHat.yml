@@ -22,5 +22,7 @@ osquery_selinux_pkgs:
   - libselinux-python
   - policycoreutils-python
 
+syslog_user: root
+syslog_group: root
 varlog_group: root
 varlog_mode: '0755'

@@ -11,11 +11,11 @@
     missingok
     compress
     delaycompress
-    create 640 {{ syslog_user | default('root') }} adm
+    create 640 {{ syslog_user | default('root') }} {{ syslog_group }}
     sharedscripts
 {% if osquery_reporting %}
     prerotate
-        test ! -x /usr/local/scripts/{{ osquery_reporting_template | basename }} || {% if ansible_distribution == 'Ubuntu' %}sudo -u {{ syslog_user }} {% endif %}/usr/local/scripts/{{ osquery_reporting_template | basename }} 2>&1 >/dev/null
+        test ! -x /usr/local/scripts/{{ osquery_reporting_template | basename }} || {% if ansible_distribution == 'Ubuntu' %}sudo -u {{ syslog_group }} {% endif %}/usr/local/scripts/{{ osquery_reporting_template | basename }} 2>&1 >/dev/null
     endscript
 {% endif %}
     postrotate
@@ -40,7 +40,7 @@
     missingok
     compress
     delaycompress
-    create 640 {{ syslog_user | default('root') }} adm
+    create 640 {{ syslog_user | default('root') }} {{ syslog_group }}
     sharedscripts
     # Ubuntu: parent directory has insecure permissions (It's world writable or writable by group which is not "root")
     su root {{ osquery_syslog_dir_group | default(varlog_group) }}

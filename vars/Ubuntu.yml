@@ -1,0 +1,4 @@
+---
+
+syslog_user: syslog
+syslog_group: adm

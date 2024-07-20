@@ -22,9 +22,8 @@ jobs:
         python-version: [3.8]
         molecule_distro:
           - 'rockylinux:9'
-          - 'rockylinux:8'
+          - 'ubuntu:24.04'
           - 'ubuntu:22.04'
-          - 'ubuntu:20.04'
     env:
       ANSIBLE_CALLBACKS_ENABLED: profile_tasks
       MOLECULE_NO_LOG: "false"

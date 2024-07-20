@@ -24,11 +24,11 @@ jobs:
       ANSIBLE_EXTRA_VARS: "-e osquery_systemd_restriction_enable=false"
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           path: juju4.osquery
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
       - name: Install dependencies

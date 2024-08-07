@@ -15,12 +15,8 @@
     sharedscripts
 {% if osquery_reporting %}
     prerotate
-<<<<<<< Updated upstream
-        test ! -x /usr/local/scripts/{{ osquery_reporting_template | basename }} || {% if ansible_distribution == 'Ubuntu' %}sudo -u {{ syslog_group }} {% endif %}/usr/local/scripts/{{ osquery_reporting_template | basename }} 2>&1 >/dev/null
-=======
         # test ! -x /usr/local/scripts/{{ osquery_reporting_template | basename }} || {% if ansible_distribution == 'Ubuntu' %}sudo -u {{ syslog_user }} {% endif %}/usr/local/scripts/{{ osquery_reporting_template | basename }} 2>&1 >/dev/null
         test ! -x /usr/local/scripts/{{ osquery_reporting_template | basename }} || {% if ansible_distribution == 'Ubuntu' %}sudo -u {{ syslog_user }} {% endif %}/usr/local/scripts/{{ osquery_reporting_template | basename }} 2>&1 >/tmp/logrotate-osquery
->>>>>>> Stashed changes
     endscript
 {% endif %}
     postrotate

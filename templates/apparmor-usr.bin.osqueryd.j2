@@ -10,6 +10,8 @@
 
   /etc/host.conf r,
   /etc/hosts r,
+  # audit: type=1400 audit: apparmor="ALLOWED" operation="open" class="file" profile="/opt/osquery/bin/osqueryd" name="/etc/passwd" pid=8622 comm="SchedulerRunner" requested_mask="r" denied_mask="r" fsuid=0 ouid=0
+  /etc/passwd r,
   /etc/nsswitch.conf r,
   /etc/osquery/osquery.conf r,
   /etc/osquery/osquery.flags r,

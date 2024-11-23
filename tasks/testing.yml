@@ -168,7 +168,7 @@
 
 - name: Get eicar file to check yara rules
   ansible.builtin.get_url:
-    url: http://www.eicar.org/download/eicar.com
+    url: https://secure.eicar.org/eicar.com
     dest: /root/test-fim-yara-eicar.com
     mode: '0644'
   when: osquery_testing_yara | bool

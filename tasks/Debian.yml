@@ -26,7 +26,7 @@
   ansible.builtin.get_url:
     url: https://pkg.osquery.io/deb/pubkey.gpg
     dest: /etc/apt/keyrings/osquery.asc
-    mode: 0644
+    mode: '0644'
   register: dl_result
   until: dl_result is success
   when: proxy_url is not defined or not proxy_url | string

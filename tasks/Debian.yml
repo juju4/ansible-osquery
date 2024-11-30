@@ -29,18 +29,17 @@
     mode: '0644'
   register: dl_result
   until: dl_result is success
-  when: proxy_url is not defined or not proxy_url | string
+  when: proxy_env is not defined or not proxy_env | string
 
 - name: Proxy
-  when: proxy_url is defined and proxy_url | string
+  when: proxy_env is defined and proxy_env | string
   block:
     # workaround for apt_key not supporting proxy (ansible#31691)
-    - name: Download Falco Apt signing key  # noqa command-instead-of-module
+    - name: Download osquery Apt signing key  # noqa command-instead-of-module
       ansible.builtin.command: curl -sL -o /etc/apt/keyrings/osquery.asc https://pkg.osquery.io/deb/pubkey.gpg
       args:
         creates: /etc/apt/keyrings/osquery.asc
-      environment:
-        http_proxy: "{{ proxy_url | default(omit) }}"
+      environment: "{{ proxy_env | default(omit) }}"
 
 - name: Configure osquery APT repository
   become: yes

@@ -19,8 +19,8 @@ osquery_selinux_pkgs:
   - selinux-policy
   - selinux-policy-devel
   - setools-console
-  - libselinux-python
-  - policycoreutils-python
+  - python3-libselinux
+  - policycoreutils-python-utils
 
 syslog_user: root
 syslog_group: root

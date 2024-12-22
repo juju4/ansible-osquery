@@ -65,6 +65,8 @@ jobs:
           pwd
           env
           find -ls
+          dpkg -l | grep apparmor
+          sudo ls -l /etc/apparmor.d/*firefox*
       - name: run test
         run: |
           cd $GITHUB_WORKSPACE/$ANSIBLE_ROLE && ansible-playbook -i localhost, --connection=local --become -vvv molecule/$ANSIBLE_SUITE/converge.yml ${ANSIBLE_EXTRA_VARS}
@@ -154,6 +156,7 @@ jobs:
           sudo grep -r "runbindable*/*" /etc/apparmor.d
           sudo grep -r 'mount.*->' /etc/apparmor.d
           sudo ls -l /etc/apparmor.d/usr.bin.osqueryd
+          sudo ls -l /etc/apparmor.d/*firefox*
           sudo cat /etc/apparmor.d/usr.bin.osqueryd || true
           sudo cat /etc/apparmor.d/opt.osquery.bin.osqueryd || true
           dpkg -l | grep apparmor

@@ -71,7 +71,7 @@ jobs:
         run: |
           sudo rm /etc/apparmor.d/firefox /etc/apparmor.d/usr.bin.firefox
           sudo systemctl restart apparmor
-        if: ${{ matrix.os == 'ubuntu-24.04' }}
+        if: ${{ matrix.version == '24.04' }}
       - name: run test
         run: |
           cd $GITHUB_WORKSPACE/$ANSIBLE_ROLE && ansible-playbook -i localhost, --connection=local --become -vvv molecule/$ANSIBLE_SUITE/converge.yml ${ANSIBLE_EXTRA_VARS}

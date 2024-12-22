@@ -37,3 +37,26 @@
     PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 # Refine policy with `aa-logprof -f /var/log/syslog`
+
+- name: Runbindable
+  when:
+    - ansible_distribution == 'Ubuntu'
+    - ansible_distribution_major_version | int >= 24
+  block:
+    - name: Check if /etc/apparmor.d/abstractions/passt exists
+      ansible.builtin.stat:
+        path: /etc/apparmor.d/abstractions/passt
+      register: f_passt
+    # https://www.mail-archive.com/ubuntu-bugs@lists.ubuntu.com/msg6063132.html
+    # https://gitlab.com/apparmor/apparmor/-/merge_requests/1236
+    - name: Workaround apparmor runbindable
+      ansible.builtin.replace:
+        path: /etc/apparmor.d/abstractions/passt
+        regexp: '^  mount options=\(rw, runbindable\) \/,'
+        replace: '  mount options=(rw, runbindable) -> /,'
+        mode: '0644'
+        backup: "{{ osquery_backup | default(false) }}"
+      notify:
+        - Reload osqueryd apparmor profile
+      when:
+        - f_passt.stat.exists

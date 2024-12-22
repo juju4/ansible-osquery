@@ -46,6 +46,18 @@
         - Reload osqueryd apparmor profile
       when:
         - f_passt.stat.exists
+    # https://bugzilla.opensuse.org/show_bug.cgi?id=1226031
+    - name: Workaround apparmor mount
+      ansible.builtin.replace:
+        path: /etc/apparmor.d/abstractions/passt
+        regexp: '^  mount\t\t""\t-> "/tmp/",'
+        replace: '  mount\t\t\t-> "/tmp/",'
+        mode: '0644'
+        backup: "{{ osquery_backup | default(false) }}"
+      notify:
+        - Reload osqueryd apparmor profile
+      when:
+        - f_passt.stat.exists
 
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers

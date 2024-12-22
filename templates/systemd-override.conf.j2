@@ -92,9 +92,9 @@ SystemCallErrorNumber=EPERM
 {% endif %}
 {% endif %}
 {% if osquery_cgroups_restriction_enable|bool %}
-CPUShares={{ osquery_cgroups_cpushares | default('1024') }}
+CPUWeight={{ osquery_cgroups_cpushares | default('1024') }}
 CPUQuota={{ osquery_cgroups_cpuquota | default('10%') }}
-MemoryLimit={{ osquery_cgroups_memorylimit | default('1G') }}
+MemoryMax={{ osquery_cgroups_memorylimit | default('1G') }}
 {% endif %}
 
 # ?

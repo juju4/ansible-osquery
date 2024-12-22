@@ -69,7 +69,8 @@ jobs:
           sudo ls -l /etc/apparmor.d/*firefox*
       - name: Apparmor workaround
         run: |
-          sudo ln -s /etc/apparmor.d/firefox /etc/apparmor.d/disable/firefox
+          sudo rm /etc/apparmor.d/firefox /etc/apparmor.d/usr.bin.firefox
+          sudo systemctl restart apparmor
       - name: run test
         run: |
           cd $GITHUB_WORKSPACE/$ANSIBLE_ROLE && ansible-playbook -i localhost, --connection=local --become -vvv molecule/$ANSIBLE_SUITE/converge.yml ${ANSIBLE_EXTRA_VARS}

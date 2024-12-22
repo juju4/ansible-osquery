@@ -153,7 +153,8 @@ jobs:
           set -x
           sudo grep -r "runbindable*/*" /etc/apparmor.d
           sudo ls -l /etc/apparmor.d/usr.bin.osqueryd
-          sudo cat /etc/apparmor.d/usr.bin.osqueryd
+          sudo cat /etc/apparmor.d/usr.bin.osqueryd || true
+          sudo cat /etc/apparmor.d/opt.osquery.bin.osqueryd || true
           dpkg -l | grep apparmor
         if: ${{ always() }}
         continue-on-error: true

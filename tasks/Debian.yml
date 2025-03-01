@@ -58,3 +58,4 @@
   when:
     - not is_container|bool
     - ansible_virtualization_type != "lxc"
+    - osquery_apparmor_enable | bool

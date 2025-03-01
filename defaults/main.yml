@@ -193,6 +193,7 @@ osquery_cgroups_restriction_enable: false
 # osquery_cgroups_memorylimit: '1G'
 # osquery_cgroups_cpushares: '100'
 osquery_systemd_restriction_enable: true
+osquery_apparmor_enable: true
 
 osquery_reporting: true
 osquery_reporting_template: osquery_report.sh

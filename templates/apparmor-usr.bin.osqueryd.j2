@@ -24,6 +24,7 @@
   /proc/ r,
   /proc/** rw,
   /proc/cpuinfo r,
+  /root/.ssh/ r,
   /root/.ssh/* r,
   /root/osqueryd.*.root.log.ERROR.* w,
   /root/osqueryd.*.root.log.INFO.* w,
@@ -56,6 +57,9 @@
   /var/osquery/osquery.db/ rw,
   /var/osquery/osquery.db/* rw,
   /var/osquery/osquery.em rw,
+  /var/spool/cron/ r,
   /var/spool/cron/** r,
   /var/tmp/* rw,
+
+  include if exists <local/osqueryd>
 }

@@ -19,6 +19,11 @@ check_tee_output
 date=$(date +%Y%m%d)
 f=/var/log/osquery/osqueryd.results.log
 f2=/var/log/osquery/osqueryd.snapshots.log
+if [ $# -ge 1 -a -f "$1" ]; then
+  f="$1"
+fi
+if [ $# -ge 2 -a -f "$2" ]; then
+  f2="$2"
 echo
 echo
 echo "      OSQUERY DAILY REPORT ${date} for ${f}"

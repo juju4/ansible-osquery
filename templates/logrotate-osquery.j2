@@ -23,6 +23,11 @@
        if invoke-rc.d osqueryd status > /dev/null 2>&1; then \
           invoke-rc.d osqueryd restart > /dev/null 2>&1; \
        fi;
+{% if syslog_postrotate_extras_cmd is defined %}
+{% for cmd in syslog_postrotate_extras_cmd %}
+       {{ cmd }}
+{% endfor %}
+{% endif %}
     endscript
 }
 
@@ -49,5 +54,10 @@
        if invoke-rc.d osqueryd status > /dev/null 2>&1; then \
           invoke-rc.d osqueryd restart > /dev/null 2>&1; \
        fi;
+{% if syslog_postrotate_extras_cmd is defined %}
+{% for cmd in syslog_postrotate_extras_cmd %}
+       {{ cmd }}
+{% endfor %}
+{% endif %}
     endscript
 }

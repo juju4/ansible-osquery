@@ -62,7 +62,7 @@
       "interval" : "{{ osquery_process_interval }}"
     },
     "processes": {
-      "query": "SELECT p1.pid, p1.name, p1.path, p1.cmdline, p1.uid, p1.euid, u.username, p1.parent, p2.name, p2.cmdline as pcmdline from processes as p1, processes as p2, users as u where p1.parent == p2.pid and p1.uid == u.uid;",
+      "query": "SELECT p1.pid, p1.name, p1.path, p1.cmdline, p1.uid, p1.euid, u.username, p1.parent, p1.cwd, p2.name as pname, p2.cmdline as pcmdline from processes as p1, processes as p2, users as u where p1.parent == p2.pid and p1.uid == u.uid and not (p2.name == 'kthreadd' and p1.uid == 0 and p1.parent == 2) ;",
       "description": "Retrieve list of processes",
       "interval" : "{{ osquery_process_interval }}"
     },

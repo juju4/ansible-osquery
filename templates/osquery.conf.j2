@@ -1,4 +1,4 @@
-{{ ansible_managed | comment('c')}}
+{{ ansible_managed | comment('c') }}
 {
   // Configure the daemon below:
   "options": {
@@ -64,7 +64,11 @@
 {% else %}
       "interval": 3600
 {% endif %}
-    }{% if osquery_fim or osquery_process_auditing %},{% endif %}
+{% if osquery_fim or osquery_process_auditing %}
+    },
+{% else %}
+    }
+{% endif %}
 
 {% if osquery_fim %}
     "fim" : {
@@ -72,9 +76,17 @@
 //      "query": "select * from file_events;",
       "query": "select f.action,f.target_path,f.mode,f.size,f.category,f.time,f.atime,f.ctime,f.mtime,f.md5,f.sha256,u.uid,u.username from users u join file_events f using (uid);",
       "removed": false,
-      "interval": {% if osquery_testing_fim_load or osquery_testing_fimfiles %}1{% else %}{{ osquery_fim_interval }}{% endif %}
+{%     if osquery_testing_fim_load or osquery_testing_fimfiles %}
+      "interval": 1
+{%     else %}
+      "interval": {{ osquery_fim_interval }}
+{%     endif %}
 
-    }{% if osquery_process_auditing %},{% endif %}
+{%     if osquery_process_auditing %}
+    },
+{%     else %}
+    }
+{%     endif %}
 
 {% endif %}
 
@@ -90,61 +102,93 @@
 {% endif %}
   },
 
-{% if osquery_yara|bool %}
+{% if osquery_yara | bool %}
   "yara": {
     "signatures": {
-{% for item in osquery_yara_signatures %}
+{%     for item in osquery_yara_signatures %}
       "{{ item.name }}": [
-{% for entry in item.list %}
-        "{{ entry }}"{% if not loop.last %},{% endif %}
+{%         for entry in item.list %}
+{%             if not loop.last %}
+        "{{ entry }}",
+{%             else %}
+        "{{ entry }}"
+{%             endif %}
 
-{% endfor %}
-      ]{% if not loop.last %},{% endif %}
+{%         endfor %}
+{%         if not loop.last %}
+      ],
+{%         else %}
+      ]
+{%         endif %}
 
-{% endfor %}
+{%     endfor %}
     },
     "file_paths": {
       // Each key is a key from file_paths
       // The value is a list of signature groups to run when an event fires
       // These will be watched for and scanned when the event framework
       // fire off an event to yara_events table
-{% for item in osquery_yara_filepaths %}
+{%     for item in osquery_yara_filepaths %}
       "{{ item.name }}": [
-{% for entry in item.list %}
-        "{{ entry }}"{% if not loop.last %},{% endif %}
+{%         for entry in item.list %}
+{%             if not loop.last %}
+        "{{ entry }}",
+{%             else %}
+        "{{ entry }}"
+{%             endif %}
 
-{% endfor %}
-      ]{% if not loop.last %},{% endif %}
+{%         endfor %}
+{%         if not loop.last %}
+      ],
+{%         else %}
+      ]
+{%         endif %}
 
-{% endfor %}
+{%     endfor %}
     }
   },
 
 {% endif %}
-{% if osquery_fim|bool or osquery_yara|bool %}
+{% if osquery_fim | bool or osquery_yara | bool %}
   "file_paths": {
-{% for item in osquery_fim_filepaths %}
+{%     for item in osquery_fim_filepaths %}
     "{{ item.name }}": [
-{% for entry in item.list %}
-      "{{ entry }}"{% if not loop.last %},{% endif %}
+{%         for entry in item.list %}
+{%             if not loop.last %}
+      "{{ entry }}",
+{%             else %}
+      "{{ entry }}"
+{%             endif %}
 
-{% endfor %}
-    ]{% if not loop.last %},{% endif %}
+{%         endfor %}
+{%         if not loop.last %}
+    ],
+{%         else %}
+    ]
+{%         endif %}
 
-{% endfor %}
+{%     endfor %}
   },
 // very noisy, https://osquery.readthedocs.io/en/stable/deployment/file-integrity-monitoring/#file-accesses
 //  "file_accesses": ["etc", "root"]
   "exclude_paths": {
-{% for item in osquery_fim_excludepaths %}
+{%     for item in osquery_fim_excludepaths %}
     "{{ item.name }}": [
-{% for entry in item.list %}
-      "{{ entry }}"{% if not loop.last %},{% endif %}
+{%         for entry in item.list %}
+{%             if not loop.last %}
+      "{{ entry }}",
+{%             else %}
+      "{{ entry }}"
+{%             endif %}
 
-{% endfor %}
-    ]{% if not loop.last %},{% endif %}
+{%         endfor %}
+{%         if not loop.last %}
+    ],
+{%         else %}
+    ]
+{%         endif %}
 
-{% endfor %}
+{%     endfor %}
   },
 
 {% endif %}
@@ -168,7 +212,11 @@
   //
   "packs": {
 {% for item in osquery_packs %}
-    "{{ item }}": "/opt/osquery/share/osquery/packs/{{ item }}.conf"{% if not loop.last %},{% endif %}
+{%     if not loop.last %}
+    "{{ item }}": "/opt/osquery/share/osquery/packs/{{ item }}.conf",
+{%     else %}
+    "{{ item }}": "/opt/osquery/share/osquery/packs/{{ item }}.conf"
+{%     endif %}
 
 {% endfor %}
   }

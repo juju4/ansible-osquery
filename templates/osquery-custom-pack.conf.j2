@@ -120,15 +120,15 @@
       "query" : "select user_ssh_keys.* from users join user_ssh_keys using (uid);",
       "description" : "info on user ssh keys",
       "interval" : "300"
-    }{% if ansible_os_family == "Darwin" %},{% endif %}
-
 {% if ansible_os_family == "Darwin" %}
+    },
     "launchd_keep_alive_children": {
       "query" : "SELECT name, program || program_arguments AS executable FROM launchd WHERE (run_at_load = 'true' AND keep_alive = 'true') AND (program != '' OR program_arguments != '');",
       "interval" : "300",
       "description" : "Find every OS X LaunchDaemon that launches an executable and keeps it running"
     }
-
+{% else %}
+    }
 {% endif %}
   }
 }

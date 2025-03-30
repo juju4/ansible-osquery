@@ -21,7 +21,7 @@ IPAddressAllow=localhost link-local multicast 10.0.0.0/8 192.168.0.0/16
 # https://github.com/osquery/osquery/issues/6381
 ProtectSystem=full
 # ProtectSystem=strict
-{% if ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int >= 21 %}
+{% if ansible_distribution == 'Ubuntu' and ansible_distribution_major_version | int >= 21 %}
 ProtectProc=ptraceable
 {% endif %}
 ReadWritePaths=/etc/osquery /var/log/osquery /var/osquery /var/run /var/tmp /tmp
@@ -32,13 +32,9 @@ PrivateDevices=yes
 
 # ProtectKernelTunables=yes
 ProtectKernelModules=yes
-{% if (ansible_distribution == 'Ubuntu' and ansible_distribution_major_version|int >= 20) or
-      (ansible_os_family == 'RedHat' and ansible_distribution_major_version|int > 8 )
-%}
 ProtectKernelLogs=yes
 ProtectHostname=yes
 ProtectClock=yes
-{% endif %}
 
 UMask=077
 
@@ -80,18 +76,14 @@ RestrictSUIDSGID=yes
           (ansible_virtualization_type == "lxc" or ansible_virtualization_type == "docker")
         ) and
       not (ansible_os_family == 'RedHat' and ansible_distribution_major_version|int < 8) %}
-{% if (ansible_os_family == 'RedHat' and ansible_distribution_major_version|int >= 8) or (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 20) %}
 SystemCallFilter=@system-service
-{% endif %}
-{% if (ansible_os_family == 'RedHat' and ansible_distribution_major_version|int >= 8) or (ansible_distribution == "Ubuntu" and ansible_distribution_major_version|int >= 18) %}
 SystemCallFilter=~@debug @mount @cpu-emulation @resources @clock @raw-io @reboot @swap
 SystemCallArchitectures=native
 # When system call is disallowed, return error code instead of killing process
 SystemCallErrorNumber=EPERM
 
 {% endif %}
-{% endif %}
-{% if osquery_cgroups_restriction_enable|bool %}
+{% if osquery_cgroups_restriction_enable | bool %}
 CPUWeight={{ osquery_cgroups_cpushares | default('1024') }}
 CPUQuota={{ osquery_cgroups_cpuquota | default('10%') }}
 MemoryMax={{ osquery_cgroups_memorylimit | default('1G') }}

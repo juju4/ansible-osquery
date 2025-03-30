@@ -2,12 +2,12 @@
 ## /etc/logrotate.d/osquery
 /var/log/osquery/osqueryd.results.log
 /var/log/osquery/osqueryd.snapshots.log {
-    rotate {{ osquery_logrotate_days|int }}
+    rotate {{ osquery_logrotate_days | int }}
     daily
-{% if syslogclient_logrotate_datext is defined and syslogclient_logrotate_datext|string %}
+{% if syslogclient_logrotate_datext is defined and syslogclient_logrotate_datext | string %}
     dateext
     dateformat {{ syslogclient_logrotate_datformat }}
-{% endif%}
+{% endif %}
     missingok
     compress
     delaycompress
@@ -16,7 +16,11 @@
 {% if osquery_reporting %}
     prerotate
         # test ! -x /usr/local/scripts/{{ osquery_reporting_template | basename }} || {% if ansible_distribution == 'Ubuntu' %}sudo -u {{ syslog_user }} {% endif %}/usr/local/scripts/{{ osquery_reporting_template | basename }} 2>&1 >/dev/null
-        test ! -x /usr/local/scripts/{{ osquery_reporting_template | basename }} || {% if ansible_distribution == 'Ubuntu' %}sudo -u {{ syslog_user }} {% endif %}/usr/local/scripts/{{ osquery_reporting_template | basename }} 2>&1 >/tmp/logrotate-osquery
+{%     if ansible_distribution == 'Ubuntu' %}
+        test ! -x /usr/local/scripts/{{ osquery_reporting_template | basename }} || sudo -u {{ syslog_user }} /usr/local/scripts/{{ osquery_reporting_template | basename }} 2>&1 >/tmp/logrotate-osquery
+{%     else %}
+        test ! -x /usr/local/scripts/{{ osquery_reporting_template | basename }} || /usr/local/scripts/{{ osquery_reporting_template | basename }} 2>&1 >/tmp/logrotate-osquery
+{%     endif %}
     endscript
 {% endif %}
     postrotate
@@ -24,25 +28,29 @@
           invoke-rc.d osqueryd restart > /dev/null 2>&1; \
        fi;
 {% if syslog_postrotate_extras_cmd is defined %}
-{% for cmd in syslog_postrotate_extras_cmd %}
+{%     for cmd in syslog_postrotate_extras_cmd %}
        {{ cmd }}
-{% endfor %}
+{%     endfor %}
 {% endif %}
     endscript
 }
 
 {% if osquery_syslog_target is defined and osquery_syslog_target != '' and '/var/log/' in osquery_syslog_target %}
-{{ osquery_syslog_target }}{% if not (osquery_syslog_target2 is defined and osquery_syslog_target2 != '' and '/var/log/' in osquery_syslog_target2) %} {{ '{' }}{% endif %}
+{%     if not (osquery_syslog_target2 is defined and osquery_syslog_target2 != '' and '/var/log/' in osquery_syslog_target2) %}
+{{ osquery_syslog_target }}{{ '{' }}
+{%     else %}
+{{ osquery_syslog_target }}
+{%     endif %}
 {% endif %}
 {% if osquery_syslog_target2 is defined and osquery_syslog_target2 != '' and '/var/log/' in osquery_syslog_target2 %}
 {{ osquery_syslog_target2 }} {
 {% endif %}
-    rotate {{ osquery_logrotate_days|int }}
+    rotate {{ osquery_logrotate_days | int }}
     daily
 {% if syslogclient_logrotate_datext is defined and syslogclient_logrotate_datext %}
     dateext
     dateformat {{ syslogclient_logrotate_datformat }}
-{% endif%}
+{% endif %}
     missingok
     compress
     delaycompress
@@ -55,9 +63,9 @@
           invoke-rc.d osqueryd restart > /dev/null 2>&1; \
        fi;
 {% if syslog_postrotate_extras_cmd is defined %}
-{% for cmd in syslog_postrotate_extras_cmd %}
+{%     for cmd in syslog_postrotate_extras_cmd %}
        {{ cmd }}
-{% endfor %}
+{%     endfor %}
 {% endif %}
     endscript
 }

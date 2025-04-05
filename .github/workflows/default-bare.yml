@@ -135,6 +135,13 @@ jobs:
           osqueryi --config_check --verbose || true
         if: ${{ always() }}
         continue-on-error: true
+      - name: After script - osquery packs
+        run: |
+          set -x
+          cat /opt/osquery/share/osquery/packs/osquery-custom-pack.conf || true
+          cat /opt/osquery/share/osquery/packs/osquery-snapshots-pack.conf || true
+        if: ${{ always() }}
+        continue-on-error: true
       - name: After script - osquery ERROR/WARNING/INFO
         run: |
           sudo cat /var/log/osquery/osqueryd.{ERROR,WARNING,INFO}

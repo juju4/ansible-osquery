@@ -6,28 +6,28 @@
     "arp_anomalies": {
       "query" : "SELECT address, mac, COUNT(mac) AS mac_count FROM arp_cache GROUP BY mac HAVING count(mac) > 1;",
       "description" : "Retrieves interface details.",
-      "interval" : "{{ osquery_pack_interval_short }}"
+      "interval" : "{{ osquery_pack_interval_short }}"
     },
     "authorized_keys": {
       "query" : "select authorized_keys.* from users join authorized_keys using (uid);",
       "description" : "Info on authorized keys",
-      "interval" : "{{ osquery_pack_interval_short }}"
+      "interval" : "{{ osquery_pack_interval_short }}"
     },
     "crontab": {
       "query" : "select * from crontab;",
       "version" : "1.4.5",
       "description" : "Retrieves all the jobs scheduled in crontab in the target system.",
       "value" : "Identify malware that uses this persistence mechanism to launch at a given interval",
-      "interval" : "{{ osquery_pack_interval_short }}"
+      "interval" : "{{ osquery_pack_interval_short }}"
     },
     "dns_resolvers": {
       "query" : "select * from dns_resolvers;",
       "description" : "check DNS resolvers",
-      "interval" : "{{ osquery_pack_interval_short }}"
+      "interval" : "{{ osquery_pack_interval_short }}"
     },
     "known_hosts": {
       "query" : "select known_hosts.* from users join known_hosts using (uid);",
-        "interval" : "{{ osquery_pack_interval_short }}",
+        "interval" : "{{ osquery_pack_interval_short }}",
         "description" : "line-delimited known_hosts table"
     },
     "etc_hosts": {
@@ -35,7 +35,7 @@
       "version" : "1.4.5",
       "description" : "Retrieves all the entries in the target system /etc/hosts file.",
       "value" : "Identify network communications that are being redirected. Example: identify if security logging has been disabled",
-      "interval" : "{{ osquery_pack_interval_short }}"
+      "interval" : "{{ osquery_pack_interval_short }}"
     },
     "fim_extattr": {
       "query" : "select f.action,f.target_path,f.mode,f.size,f.category,f.time,f.atime,f.ctime,f.mtime,u.uid,u.username,ea.key,from_base64(ea.value) as value from users u, file_events f, extended_attributes ea where u.uid == f.uid and ea.path == f.target_path;",
@@ -43,13 +43,13 @@
 {% if osquery_testing or osquery_testing_pause %}
       "interval": "10"
 {% else %}
-      "interval" : "{{ osquery_pack_interval_short }}"
+      "interval" : "{{ osquery_pack_interval_short }}"
 {% endif %}
     },
     "groups": {
       "query" : "select * from groups;",
       "description" : "Retrieves groups info.",
-      "interval" : "{{ osquery_pack_interval_short }}"
+      "interval" : "{{ osquery_pack_interval_short }}"
     },
     "interface_details": {
       "query" : "select * from interface_details;",
@@ -97,34 +97,34 @@
     },
     "python_packages": {
       "query" : "SELECT python_packages.*,users.username FROM python_packages JOIN users using (uid);",
-      "interval" : "{{ osquery_pack_interval_long }}",
+      "interval" : "{{ osquery_pack_interval_long }}",
       "description" : "Python packages installed in a system"
     },
     "sudoers": {
       "query" : "select * from sudoers;",
       "description" : "Retrieves all the information for sudoers.",
-      "interval" : "{{ osquery_pack_interval_short }}"
+      "interval" : "{{ osquery_pack_interval_short }}"
     },
     "suid_bin": {
       "query": "select * from suid_bin;",
-      "interval": "{{ osquery_pack_interval_short }}",
+      "interval": "{{ osquery_pack_interval_short }}",
       "platform": "all",
       "description": "Retrieves s/guid executables"
     },
     "users": {
       "query" : "select * from users;",
-      "interval" : "{{ osquery_pack_interval_short }}",
+      "interval" : "{{ osquery_pack_interval_short }}",
       "description" : "Retrieves users info."
     },
     "user_ssh_keys": {
       "query" : "select user_ssh_keys.* from users join user_ssh_keys using (uid);",
       "description" : "info on user ssh keys",
-      "interval" : "{{ osquery_pack_interval_short }}"
+      "interval" : "{{ osquery_pack_interval_short }}"
 {% if ansible_os_family == "Darwin" %}
     },
     "launchd_keep_alive_children": {
       "query" : "SELECT name, program || program_arguments AS executable FROM launchd WHERE (run_at_load = 'true' AND keep_alive = 'true') AND (program != '' OR program_arguments != '');",
-      "interval" : "{{ osquery_pack_interval_short }}",
+      "interval" : "{{ osquery_pack_interval_short }}",
       "description" : "Find every OS X LaunchDaemon that launches an executable and keeps it running"
     }
 {% else %}

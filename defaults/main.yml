@@ -34,6 +34,8 @@ osquery_packs:
   - osquery-custom-pack
   - "osquery-snapshots-pack"
   - osquery-monitoring2-pack
+osquery_pack_interval_short: 300
+osquery_pack_interval_long: 900
 osquery_config_plugin: 'filesystem'
 osquery_logger_plugin: 'filesystem'
 # osquery_logger_plugin: 'syslog'

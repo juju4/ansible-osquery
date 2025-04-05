@@ -1,7 +1,7 @@
 ---
 
 - name: Verify
-  hosts: molecule
+  hosts: "{{ playbook_hosts | default('all') }}"
   tasks:
     - name: Ensure /etc/osquery/osquery.conf config file is present
       ansible.builtin.stat:

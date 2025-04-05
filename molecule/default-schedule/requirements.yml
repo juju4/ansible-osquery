@@ -1,0 +1,6 @@
+---
+
+collections:
+  - name: community.docker
+    # https://github.com/ansible-collections/community.docker/issues/860
+    version: '>=3.10.2'

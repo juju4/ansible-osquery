@@ -1,0 +1,58 @@
+---
+
+- name: Verify
+  hosts: "{{ playbook_hosts | default('all') }}"
+  tasks:
+    - name: Ensure /etc/osquery/osquery.conf config file is present
+      ansible.builtin.stat:
+        path: /etc/osquery/osquery.conf
+      register: cfg
+    - name: Validate config present
+      ansible.builtin.assert:
+        that: cfg.stat.exists and cfg.stat.size != 0
+
+    - name: Ensure process is running
+      ansible.builtin.command: pgrep -u root osqueryd
+      register: ps
+      changed_when: false
+      ignore_errors: true
+    - name: Validate ps output
+      ansible.builtin.assert:
+        that: ps.stdout
+      failed_when: false
+
+    - name: List /var/log/osquery
+      ansible.builtin.command: ls -lA /var/log/osquery
+      changed_when: false
+
+    - name: Fetch content of /var/log/osquery/osqueryd.INFO
+      ansible.builtin.slurp:
+        src: /var/log/osquery/osqueryd.INFO
+      register: info
+    - name: Validate /var/log/osquery/osqueryd.INFO
+      ansible.builtin.assert:
+        that: >
+          "'Log line format:' in info['content'] | b64decode"
+
+    - name: Check if /var/log/osquery/osqueryd.WARNING exists
+      ansible.builtin.stat:
+        path: /var/log/osquery/osqueryd.WARNING
+      register: warnfile
+    - name: Fetch content of /var/log/osquery/osqueryd.WARNING
+      ansible.builtin.slurp:
+        src: /var/log/osquery/osqueryd.WARNING
+      register: warn
+      when: warnfile.stat.exists
+    - name: Validate /var/log/osquery/osqueryd.WARNING
+      ansible.builtin.assert:
+        that: >
+          "'Log line format:' in warn['content'] | b64decode and
+          'kernel: Cannot access /dev/osquery' not in warn['content'] | b64decode"
+      when: warnfile.stat.exists
+
+    - name: Operation System
+      ansible.builtin.command: osqueryi --line "SELECT version, build, platform FROM os_version;"
+      changed_when: false
+    - name: Osquery version
+      ansible.builtin.command: osqueryi --line "SELECT version from osquery_info;"
+      changed_when: false

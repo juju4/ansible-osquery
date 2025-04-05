@@ -1,0 +1,35 @@
+---
+dependency:
+  name: galaxy
+  enabled: False
+driver:
+  name: docker
+platforms:
+  - name: instance
+    image: ${MOLECULE_DISTRO:-ubuntu:20.04}
+    # env:
+    #   http_proxy: ${http_proxy}
+    #   https_proxy: ${https_proxy}
+    #   no_proxy: ${no_proxy}
+    groups:
+      - molecule
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      verbosity: 2
+scenario:
+  name: default-schedule
+  test_sequence:
+    - dependency
+    # - lint
+    - cleanup
+    - destroy
+    - syntax
+    - create
+    - prepare
+    - converge
+    # - idempotence
+    - verify
+verifier:
+  name: ansible

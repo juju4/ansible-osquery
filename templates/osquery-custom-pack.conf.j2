@@ -96,7 +96,7 @@
       "description": ""
     },
     "python_packages": {
-      "query" : "select * FROM python_packages;",
+      "query" : "SELECT python_packages.*,users.username FROM python_packages JOIN users using (uid);",
       "interval" : "{{ osquery_pack_interval_long }}",
       "description" : "Python packages installed in a system"
     },

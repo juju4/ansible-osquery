@@ -9,7 +9,7 @@
 
     // Set 'disable_logging' to true to prevent writing any info, warning, error
     // logs. If a logging plugin is selected it will still write query results.
-    "disable_logging": "{{ osquery_disable_logging | default(false) }}",
+    "disable_logging": "{{ osquery_disable_logging | default(false) | lower }}",
 
     // Query differential results are logged as change-events to assist log
     // aggregation operations like searching and transactons.
@@ -36,7 +36,7 @@
     //"disable_tables": "foo_bar,time",
 
     // Enable debug or verbose debug output when logging.
-    "verbose": "{{ osquery_verbose | default(false) }}",
+    "verbose": "{{ osquery_verbose | default(false) | lower }}",
 
     // The number of threads for concurrent query schedule execution.
     "worker_threads": "{{ osquery_worker_threads | default(2) }}",
@@ -44,12 +44,12 @@
     // Enable schedule profiling, this will fill in averages and totals for
     // system/user CPU time and memory for every query in the schedule.
     // Add a query: "select * from osquery_schedule" to record the performances.
-    //"enable_monitor": "{{ osquery_enable_monitor | default(true) }}",
+    //"enable_monitor": "{{ osquery_enable_monitor | default(true) | lower }}",
 
 {% if osquery_fim %}
     "disable_events": "false",
 {% endif %}
-    "logger_snapshot_event_type": "{{ osquery_logger_snapshot_event_type | default(true) }}"
+    "logger_snapshot_event_type": "{{ osquery_logger_snapshot_event_type | default(true) | lower }}"
   },
 
   // Define a schedule of queries:

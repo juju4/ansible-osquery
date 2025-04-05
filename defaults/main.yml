@@ -93,8 +93,8 @@ osquery_fim_filepaths:
       - "/usr/sbin/%%"
       - "/usr/local/bin/%%"
       - "/usr/local/sbin/%%"
-      - "/opt/bin/%%"
-      - "/opt/sbin/%%"
+      # - "/opt/bin/%%"
+      # - "/opt/sbin/%%"
   - name: boot
     list:
       - "/boot/%%"

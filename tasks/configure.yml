@@ -99,6 +99,7 @@
             src: logrotate-osquery.j2
             dest: /etc/logrotate.d/osquery
             mode: '0644'
+            owner: root
             backup: "{{ osquery_backup | default(false) }}"
             validate: 'logrotate -dv %s'
           environment:

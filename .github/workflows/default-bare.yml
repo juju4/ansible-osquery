@@ -24,18 +24,22 @@ jobs:
             version: '24.04'
             suite: default
             experimental: false
+            apparmor_fix: true
           - distribution: ubuntu
             version: '22.04'
             suite: default
             experimental: false
+            apparmor_fix: false
           - distribution: ubuntu
             version: '24.04'
             suite: default-schedule
             experimental: false
+            apparmor_fix: true
           - distribution: ubuntu
             version: '24.04-arm'
             suite: default
             experimental: true
+            apparmor_fix: true
     env:
       ANSIBLE_CALLBACKS_ENABLED: profile_tasks
       ANSIBLE_EXTRA_VARS: ""
@@ -79,7 +83,7 @@ jobs:
         run: |
           sudo rm /etc/apparmor.d/firefox /etc/apparmor.d/usr.bin.firefox
           sudo systemctl restart apparmor
-        if: ${{ matrix.version == '24.04' }}
+        if: ${{ matrix.apparmor_fix }}
       - name: run test
         run: |
           cd $GITHUB_WORKSPACE/$ANSIBLE_ROLE && ansible-playbook -i localhost, --connection=local --become -vvv molecule/$ANSIBLE_SUITE/converge.yml ${ANSIBLE_EXTRA_VARS}

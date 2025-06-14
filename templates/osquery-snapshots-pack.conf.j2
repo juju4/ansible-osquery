@@ -124,7 +124,7 @@
       "snapshot": true
     },
     "python_packages": {
-      "query" : "select * FROM python_packages;",
+      "query" : "SELECT python_packages.*,users.username FROM python_packages JOIN users using (uid);",
       "interval" : "{{ osquery_snapshot_interval }}",
       "snapshot": true,
       "description" : "Python packages installed in a system"

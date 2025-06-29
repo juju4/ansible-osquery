@@ -35,8 +35,7 @@
     url: https://pkg.osquery.io/deb/pubkey.gpg
     dest: /etc/apt/keyrings/osquery.asc
     mode: '0644'
-  environment:
-    https_proxy: "{{ proxy_url | default(omit) }}"
+  environment: "{{ osquery_env | default(omit) }}"
   register: dl_result
   until: dl_result is success
   when: proxy_env is not defined or not proxy_env | string

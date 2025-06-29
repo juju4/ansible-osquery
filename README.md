@@ -106,6 +106,12 @@ See also templates/osquery_report.sh.j2
 
 * [Conflict between file_events and yara_events in scheduled query results #6793](https://github.com/osquery/osquery/issues/6793)
 
+* "Mount Namespace" issue with systemd related to "ReadWritePaths=" in systemd unit. Comment line as workaround. Not reproduced on Github CI and Ubuntu (default-bare).
+```
+systemd[48847]: osqueryd.service: Failed to set up mount namespacing: /run/systemd/unit-root/run/osqueryd.pid: No such file or directory
+systemd[48847]: osqueryd.service: Failed at step NAMESPACE spawning /bin/sh: No such file or directory
+```
+
 ## License
 
 BSD 2-clause

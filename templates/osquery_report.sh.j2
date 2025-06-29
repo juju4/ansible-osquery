@@ -79,13 +79,15 @@ jq -r 'select(.name == "pack_osquery-custom-pack_process_open_sockets") | .colum
 echo
 echo
 
-echo "** Snapshots Queries name"
-jq -r '.name' "$f2" | sort | uniq -c | sort -nr
-echo "** Snapshots system controls"
-jq -r 'select(.name == "pack_osquery-snapshots-pack_system_controls") | .columns.name' "$f2" | sort | uniq -c | sort -nr
-echo "** /etc/hosts"
-jq -r 'select(.name == "pack_osquery-snapshots-pack_etc_hosts") | .columns.address + " " + .columns.hostnames' "$f2" | sort | uniq -c | sort -nr
-echo
-echo
+if [ -f "${f2}" ]; then
+  echo "** Snapshots Queries name"
+  jq -r '.name' "$f2" | sort | uniq -c | sort -nr
+  echo "** Snapshots system controls"
+  jq -r 'select(.name == "pack_osquery-snapshots-pack_system_controls") | .columns.name' "$f2" | sort | uniq -c | sort -nr
+  echo "** /etc/hosts"
+  jq -r 'select(.name == "pack_osquery-snapshots-pack_etc_hosts") | .columns.address + " " + .columns.hostnames' "$f2" | sort | uniq -c | sort -nr
+  echo
+  echo
+fi
 
 find {{ osquery_reporting_dest }} -name 'osquery-report-*' -mtime +{{ osquery_logrotate_days | int }} -exec rm {} \; 2>/dev/null

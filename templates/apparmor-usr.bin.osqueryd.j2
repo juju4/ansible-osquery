@@ -1,14 +1,18 @@
 {{ ansible_managed | comment }}
 #include <tunables/global>
 
-/opt/osquery/bin/osqueryd {
+# https://github.com/trailofbits/algo/issues/1223
+/opt/osquery/bin/osqueryd flags=(attach_disconnected) {
   #include <abstractions/base>
 
   # https://gitlab.com/apparmor/apparmor/-/wikis/TechnicalDoc_Proc_and_ptrace
   ptrace (trace) peer=/opt/osquery/bin/osqueryd,
   deny ptrace (read, readby, tracedby),
 
+  /boot/ r,
   /dev/ r,
+  /dev/shm/ r,
+  /etc/ r,
   /etc/cron.d/* r,
   /etc/group r,
   /etc/host.conf r,
@@ -19,6 +23,7 @@
   /etc/nsswitch.conf r,
   /etc/osquery/osquery.conf r,
   /etc/osquery/osquery.flags r,
+  /home/ r,
   /home/*/.ssh/* r,
   /home/*/.bash_history r,
   /proc/ r,
@@ -30,9 +35,11 @@
   /root/osqueryd.*.root.log.INFO.* w,
   /root/osqueryd.*.root.log.WARNING.* w,
   /root/.bash_history r,
-  /run/osqueryd.pid wk,
+  /run/osqueryd.pid rwk,
   /run/resolvconf/resolv.conf r,
   /run/systemd/userdb/* r,
+  # https://razva.ro/fixing-apparmordenied-namerunsystemdjournaldev-log/
+  /run/systemd/journal/dev-log rw,
   /run/udev/data/** r,
   /run/utmp r,
   /sys/bus/ r,
@@ -44,22 +51,34 @@
   /tmp/user/0/osqueryd.*.root.log.INFO.* w,
   /tmp/user/0/osqueryd.*.root.log.WARNING.* w,
   /opt/osquery/bin/osqueryd Px,
+  # watcher on debian-11
+  # apparmor="DENIED" operation="open" profile="/opt/osquery/bin/osqueryd" name="/opt/osquery/bin/osqueryd" pid=35070 comm="WatcherRunner" requested_mask="r" denied_mask="r" fsuid=0 ouid=0
+  # osqueryd[35070]: E0620 10:29:17.415285 35071 shutdown.cpp:80] [Ref #1382] osqueryd has unsafe permissions: /opt/osquery/bin/osqueryd
+  /opt/osquery/bin/osqueryd r,
   /opt/osquery/share/osquery/packs/* r,
+  /root/ r,
   /sys/bus/** r,
   /sys/class/block/* r,
   /usr/bin/* r,
+  /usr/lib/ r,
+  /usr/lib64/ r,
   /usr/sbin/* r,
   /usr/local/bin/* r,
+  /usr/local/etc/ r,
+  /usr/local/lib/ r,
   /usr/local/sbin/* r,
   /usr/share/misc/pci.ids r,
   /var/log/* rk,
   /var/log/osquery/* rwk,
   /var/osquery/osquery.db/ rw,
   /var/osquery/osquery.db/* rw,
+  /var/osquery/osquery.db/LOCK rwk,
   /var/osquery/osquery.em rw,
   /var/spool/cron/ r,
   /var/spool/cron/** r,
   /var/tmp/* rw,
+  /var/www/ r,
 
-  include if exists <local/osqueryd>
+  # nok w aa-complain on debian-11/proxmox?
+  # include if exists <local/osqueryd>
 }

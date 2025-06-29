@@ -122,10 +122,12 @@ jobs:
         continue-on-error: true
       - name: After script - systemd
         run: |
+          set -x
           systemctl -l --no-pager status osqueryd || true
           systemd-analyze security osqueryd || true
           systemctl --failed || true
           systemctl status osqueryd || true
+          cat /lib/systemd/system/osqueryd.service
         if: ${{ always() }}
         continue-on-error: true
       - name: After script - files
@@ -177,10 +179,11 @@ jobs:
       - name: After script - apparmor
         run: |
           set -x
-          sudo grep -r "runbindable*/*" /etc/apparmor.d
-          sudo grep -r 'mount.*->' /etc/apparmor.d
-          sudo ls -l /etc/apparmor.d/usr.bin.osqueryd
-          sudo ls -l /etc/apparmor.d/*firefox*
+          sudo grep -r "runbindable*/*" /etc/apparmor.d || true
+          sudo grep -r 'mount.*->' /etc/apparmor.d || true
+          sudo ls -l /etc/apparmor.d/usr.bin.osqueryd || true
+          sudo ls -l /etc/apparmor.d/*firefox* || true
+          sudo find /etc/apparmor* -iname '*osquery*' || true
           sudo cat /etc/apparmor.d/usr.bin.osqueryd || true
           sudo cat /etc/apparmor.d/opt.osquery.bin.osqueryd || true
           dpkg -l | grep apparmor

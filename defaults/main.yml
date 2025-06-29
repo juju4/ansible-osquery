@@ -164,11 +164,10 @@ osquery_process_auditing: false
 osquery_process_interval: 5
 osquery_socket_interval: 5
 
-## queries snapshots: 1/week (or 1/month? nok)
+## queries snapshots: 1/day or 1/week
 ## Max interval 1/w: https://github.com/theopolis/osquery/commit/b76dee8a1fddccb500bc4a058daa1b39083b9dbb
-osquery_snapshot_interval: 604800
+osquery_snapshot_interval: 86400
 osquery_snapshot_interval2: 604800
-# osquery_snapshot_interval2: 2592000
 
 osquery_logrotate: true
 osquery_logrotate_days: 90

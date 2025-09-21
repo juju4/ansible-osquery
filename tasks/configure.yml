@@ -190,7 +190,9 @@
 
 - name: Import syslog-target
   ansible.builtin.import_tasks: syslog-target.yml
-  when: osquery_syslog_target is defined and osquery_syslog_target
+  when:
+    - osquery_syslog_target is defined
+    - osquery_syslog_target | length > 0
 
 - name: Import selinux-end
   ansible.builtin.import_tasks: selinux-end.yml
@@ -200,4 +202,4 @@
 
 - name: Import reporting
   ansible.builtin.import_tasks: reporting.yml
-  when: osquery_reporting
+  when: osquery_reporting | bool

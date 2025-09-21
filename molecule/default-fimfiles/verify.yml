@@ -31,8 +31,8 @@
       register: info
     - name: Validate /var/log/osquery/osqueryd.INFO
       ansible.builtin.assert:
-        that: >
-          "'Log line format:' in info['content'] | b64decode"
+        that:
+          - "'Log line format:' in info['content'] | b64decode"
 
     - name: Check if /var/log/osquery/osqueryd.WARNING exists
       ansible.builtin.stat:
@@ -45,9 +45,9 @@
       when: warnfile.stat.exists
     - name: Validate /var/log/osquery/osqueryd.WARNING
       ansible.builtin.assert:
-        that: >
-          "'Log line format:' in warn['content'] | b64decode and
-          'kernel: Cannot access /dev/osquery' not in warn['content'] | b64decode"
+        that:
+          - "'Log line format:' in warn['content'] | b64decode"
+          - "'kernel: Cannot access /dev/osquery' not in warn['content'] | b64decode"
       when: warnfile.stat.exists
 
     - name: Check if /var/log/osquery/osqueryd.results.logs exists
@@ -61,10 +61,10 @@
       when: resfile.stat.exists
     - name: Validate /var/log/osquery/osqueryd.results.logs
       ansible.builtin.assert:
-        that: >
-          "'Log line format:' in res['content'] | b64decode and
-          'kernel: Cannot access /dev/osquery' not in res['content'] | b64decode and
-          '\"system_info\",' in res['content'] | b64decode and
+        that:
+          - "'Log line format:' in res['content'] | b64decode"
+          - "'kernel: Cannot access /dev/osquery' not in res['content'] | b64decode"
+          - "'\"system_info\",' in res['content'] | b64decode and
           '\"physical_memory\":' in res['content'] | b64decode and
           '\"target_path\":\"\/\/fim-testing1' in res['content'] | b64decode and
           '\"target_path\":\"\/root\/fim-testing2' in res['content'] | b64decode and

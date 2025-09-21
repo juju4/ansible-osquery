@@ -31,8 +31,8 @@
       register: info
     - name: Validate /var/log/osquery/osqueryd.INFO
       ansible.builtin.assert:
-        that: >
-          "'Log line format:' in info['content'] | b64decode"
+        that:
+          - "'Log line format:' in info['content'] | b64decode"
 
     - name: Check if /var/log/osquery/osqueryd.WARNING exists
       ansible.builtin.stat:
@@ -45,9 +45,9 @@
       when: warnfile.stat.exists
     - name: Validate /var/log/osquery/osqueryd.WARNING
       ansible.builtin.assert:
-        that: >
-          "'Log line format:' in warn['content'] | b64decode and
-          'kernel: Cannot access /dev/osquery' not in warn['content'] | b64decode"
+        that:
+          - "'Log line format:' in warn['content'] | b64decode"
+          - "'kernel: Cannot access /dev/osquery' not in warn['content'] | b64decode"
       when: warnfile.stat.exists
 
     - name: Operation System

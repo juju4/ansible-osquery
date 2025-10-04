@@ -38,10 +38,10 @@
   environment: "{{ osquery_env | default(omit) }}"
   register: dl_result
   until: dl_result is success
-  when: proxy_env is not defined or not proxy_env | string
+  when: proxy_env is not defined or not proxy_env | length > 0
 
 - name: Proxy
-  when: proxy_env is defined and proxy_env | string
+  when: proxy_env is defined and proxy_env | length > 0
   block:
     # workaround for apt_key not supporting proxy (ansible#31691)
     - name: Download osquery Apt signing key  # noqa command-instead-of-module

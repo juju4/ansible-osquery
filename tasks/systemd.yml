@@ -1,29 +1,100 @@
 ---
 
-- name: Ensure override folder exists
-  ansible.builtin.file:
-    dest: /etc/systemd/system/osqueryd.service.d
-    state: directory
-    mode: '0755'
 
-# if issue, check /var/log/audit/audit.log
-- name: Review osquery systemd options - RestartSec, Seccomp...
-  ansible.builtin.template:
-    src: systemd-override.conf.j2
-    dest: /etc/systemd/system/osqueryd.service.d/override.conf
-    mode: '0644'
-    backup: "{{ osquery_backup | default(false) }}"
-  notify:
-    - Reload systemd
-    - Restart osquery
+- name: Systemd
+  block:
+    - name: Ensure override folder exists
+      ansible.builtin.file:
+        dest: /etc/systemd/system/osqueryd.service.d
+        state: directory
+        mode: '0755'
 
-- name: Fix base unit path
-  ansible.builtin.replace:
-    path: /usr/lib/systemd/system/osqueryd.service
-    regexp: '/opt/osquery/bin'
-    replace: '/usr/bin'
-    mode: '0644'
-    backup: "{{ osquery_backup | default(false) }}"
-  notify:
-    - Reload systemd
-    - Restart osquery
+    # if issue, check /var/log/audit/audit.log
+    - name: Review osquery systemd options - RestartSec, Seccomp...
+      ansible.builtin.template:
+        src: systemd-override.conf.j2
+        dest: /etc/systemd/system/osqueryd.service.d/override.conf
+        mode: '0644'
+        backup: "{{ osquery_backup | default(false) }}"
+      notify:
+        - Reload systemd
+        - Restart osquery
+  rescue:
+    - name: Import immutable
+      ansible.builtin.import_tasks: immutable.yml
+      vars:
+        target_dir: /etc/systemd/system
+        state: pre
+    - name: Import immutable
+      ansible.builtin.import_tasks: immutable.yml
+      vars:
+        target_dir: /etc/systemd/system/osqueryd.service.d/override.conf
+        state: pre
+    - name: Ensure override folder exists
+      ansible.builtin.file:
+        dest: /etc/systemd/system/osqueryd.service.d
+        state: directory
+        mode: '0755'
+    - name: Review osquery systemd options - RestartSec, Seccomp...
+      ansible.builtin.template:
+        src: systemd-override.conf.j2
+        dest: /etc/systemd/system/osqueryd.service.d/override.conf
+        mode: '0644'
+        backup: "{{ osquery_backup | default(false) }}"
+      notify:
+        - Reload systemd
+        - Restart osquery
+    - name: Import immutable
+      ansible.builtin.import_tasks: immutable.yml
+      vars:
+        target_dir: /etc/systemd/system
+        state: post
+    - name: Import immutable
+      ansible.builtin.import_tasks: immutable.yml
+      vars:
+        target_dir: /etc/systemd/system/osqueryd.service.d/override.conf
+        state: post
+
+- name: Systemd
+  block:
+    - name: Fix base unit path
+      ansible.builtin.replace:
+        path: /usr/lib/systemd/system/osqueryd.service
+        regexp: '/opt/osquery/bin'
+        replace: '/usr/bin'
+        mode: '0644'
+        backup: "{{ osquery_backup | default(false) }}"
+      notify:
+        - Reload systemd
+        - Restart osquery
+  rescue:
+    - name: Import immutable
+      ansible.builtin.import_tasks: immutable.yml
+      vars:
+        target_dir: /usr/lib/systemd/system
+        state: pre
+    - name: Import immutable
+      ansible.builtin.import_tasks: immutable.yml
+      vars:
+        target_dir: "/usr/lib/systemd/system/osqueryd.service"
+        state: pre
+    - name: Fix base unit path (immutable)
+      ansible.builtin.replace:
+        path: /usr/lib/systemd/system/osqueryd.service
+        regexp: '/opt/osquery/bin'
+        replace: '/usr/bin'
+        mode: '0644'
+        backup: "{{ osquery_backup | default(false) }}"
+      notify:
+        - Reload systemd
+        - Restart osquery
+    - name: Import immutable
+      ansible.builtin.import_tasks: immutable.yml
+      vars:
+        target_dir: /usr/lib/systemd/system
+        state: post
+    - name: Import immutable
+      ansible.builtin.import_tasks: immutable.yml
+      vars:
+        target_dir: "/usr/lib/systemd/system/osqueryd.service"
+        state: post

@@ -1,5 +1,5 @@
 ---
-name: default-fimfiles
+name: AnsibleCI-monthly
 
 on:
   workflow_dispatch:
@@ -15,6 +15,7 @@ permissions: {}
 
 jobs:
   build:
+
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -26,10 +27,28 @@ jobs:
         include:
           - molecule_distro: 'almalinux:10-kitten'
             experimental: true
-            suite: default-fimfiles
+            suite: default
+          - molecule_distro: 'rockylinux:9'
+            experimental: true
+            suite: default
           - molecule_distro: 'ubuntu:24.04'
             experimental: true
-            suite: default-fimfiles
+            suite: default
+          - molecule_distro: 'ubuntu:22.04'
+            experimental: true
+            suite: default
+          - molecule_distro: 'debian:13'
+            experimental: false
+            suite: default
+          - molecule_distro: 'debian:12'
+            experimental: false
+            suite: default
+          - molecule_distro: 'fedora:42'
+            experimental: true
+            suite: default
+          - molecule_distro: 'fedora:41'
+            experimental: true
+            suite: default
     env:
       ANSIBLE_CALLBACKS_ENABLED: profile_tasks
       MOLECULE_NO_LOG: "false"

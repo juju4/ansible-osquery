@@ -7,6 +7,11 @@ on:
   workflow_dispatch:
   schedule:  # run weekly, every monday 02:30
     - cron: '30 2 * * 1'
+  merge_group:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}
+  cancel-in-progress: true
 
 permissions: {}
 
@@ -25,25 +30,13 @@ jobs:
           - molecule_distro: 'almalinux:10-kitten'
             experimental: true
             suite: default
-          - molecule_distro: 'rockylinux:9'
-            experimental: true
-            suite: default
           - molecule_distro: 'ubuntu:24.04'
             experimental: true
             suite: default
-          - molecule_distro: 'ubuntu:22.04'
-            experimental: true
-            suite: default
-          - molecule_distro: 'debian:trixie-slim'
-            experimental: false
-            suite: default
-          - molecule_distro: 'debian:12'
+          - molecule_distro: 'debian:13'
             experimental: false
             suite: default
           - molecule_distro: 'fedora:42'
-            experimental: true
-            suite: default
-          - molecule_distro: 'fedora:41'
             experimental: true
             suite: default
     env:
@@ -66,7 +59,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install molecule molecule-plugins docker ansible-lint flake8 testinfra ansible
           mkdir -p $HOME/.ansible/roles && ln -s $GITHUB_WORKSPACE/$ANSIBLE_ROLE $HOME/.ansible/roles/ || true
-          [ -f molecule/${SUITE}/requirements.yml ] && ansible-galaxy install -r molecule/${SUITE}/requirements.yml || true
+          [ -f molecule/${ANSIBLE_SUITE}/requirements.yml ] && ansible-galaxy install -r molecule/${ANSIBLE_SUITE}/requirements.yml || true
       - name: Fetch central settings repository
         run: |
           export settings_repo="https://raw.githubusercontent.com/juju4/ansible-ci-settings/main"
@@ -86,7 +79,7 @@ jobs:
           ansible-galaxy role list || true
           pwd
           env
-          find -ls
+          find . -ls
       - name: Galaxy dependencies
         run: |
           cd $GITHUB_WORKSPACE/$ANSIBLE_ROLE && ansible-galaxy install --timeout 120 --verbose -r molecule/$ANSIBLE_SUITE/requirements.yml

@@ -1,0 +1,27 @@
+---
+# vars file for osquery (CentOS specific)
+
+osquery_packages:
+  - osquery
+  - rsyslog
+  - procps-ng
+
+osquery_debug_packages:
+  - osquery-debuginfo
+
+_osquery_repository: "{{ osquery_repository | default('https://pkg.osquery.io/rpm/osquery-s3-rpm.repo') }}"
+_osquery_repositorykey: "{{ osquery_repositorykey | default('https://pkg.osquery.io/rpm/GPG') }}"
+
+_osquery_auditd_pkg: "audit"
+
+osquery_selinux_pkgs:
+  - selinux-policy
+  - selinux-policy-devel
+  - setools-console
+  - python3-libselinux
+  - policycoreutils-python-utils
+
+syslog_user: root
+syslog_group: root
+varlog_group: root
+varlog_mode: '0755'

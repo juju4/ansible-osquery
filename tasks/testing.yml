@@ -43,6 +43,7 @@
     - name: Systemd | check service status
       ansible.builtin.command: "systemctl status osqueryd -l"
       changed_when: false
+      failed_when: false
       register: systemctl
     - name: Debug | systemctl output
       ansible.builtin.debug:
@@ -55,6 +56,7 @@
     - name: Service | check service status  # noqa command-instead-of-module
       ansible.builtin.command: "service osqueryd status"
       changed_when: false
+      failed_when: false
       register: service
     - name: Debug | service output
       ansible.builtin.debug:

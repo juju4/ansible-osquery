@@ -1,6 +1,11 @@
 ---
 # tasks file for osquery (CentOS specific)
 
+- name: Ensure gnupg is present
+  ansible.builtin.package:
+    name: gnupg
+    state: present
+
 - name: Install osquery repository key
   ansible.builtin.rpm_key:
     state: present

@@ -42,7 +42,7 @@
     state: restarted
   when:
     - is_container|bool
-    - not (ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 7)
+    - not (ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version']|int >= 7)
 
 - name: Refresh apt cache
   ansible.builtin.apt:

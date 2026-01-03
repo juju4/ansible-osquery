@@ -21,7 +21,7 @@ IPAddressAllow=localhost link-local multicast 10.0.0.0/8 192.168.0.0/16
 # https://github.com/osquery/osquery/issues/6381
 ProtectSystem=full
 # ProtectSystem=strict
-{% if ansible_distribution == 'Ubuntu' and ansible_distribution_major_version | int >= 21 %}
+{% if ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_major_version'] | int >= 21 %}
 ProtectProc=ptraceable
 {% endif %}
 ReadWritePaths=/etc/osquery /var/log/osquery /var/osquery /var/run /var/tmp /tmp
@@ -72,10 +72,10 @@ RestrictRealtime=yes
 RestrictSUIDSGID=yes
 # RemoveIPC=
 
-{% if not (ansible_virtualization_type is defined and
-          (ansible_virtualization_type == "lxc" or ansible_virtualization_type == "docker")
+{% if not (ansible_facts['virtualization_type'] is defined and
+          (ansible_facts['virtualization_type'] == "lxc" or ansible_facts['virtualization_type'] == "docker")
         ) and
-      not (ansible_os_family == 'RedHat' and ansible_distribution_major_version|int < 8) %}
+      not (ansible_facts['os_family'] == 'RedHat' and ansible_facts['distribution_major_version']|int < 8) %}
 SystemCallFilter=@system-service
 SystemCallFilter=~@debug @mount @cpu-emulation @resources @clock @raw-io @reboot @swap
 SystemCallArchitectures=native

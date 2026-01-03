@@ -120,7 +120,7 @@
       "query" : "select user_ssh_keys.* from users join user_ssh_keys using (uid);",
       "description" : "info on user ssh keys",
       "interval" : "{{ osquery_pack_interval_short }}"
-{% if ansible_os_family == "Darwin" %}
+{% if ansible_facts['os_family'] == "Darwin" %}
     },
     "launchd_keep_alive_children": {
       "query" : "SELECT name, program || program_arguments AS executable FROM launchd WHERE (run_at_load = 'true' AND keep_alive = 'true') AND (program != '' OR program_arguments != '');",

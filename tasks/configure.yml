@@ -118,17 +118,17 @@
 - name: FIM
   when: >
     osquery_fim and
-    not (ansible_virtualization_type is defined and
-          (ansible_virtualization_type == "docker" or
-           ansible_virtualization_type == "containerd" or
-           ansible_virtualization_type == "container" or
-           ansible_virtualization_type == "lxc" or
-           ansible_virtualization_type == "VirtualPC")
+    not (ansible_facts['virtualization_type'] is defined and
+          (ansible_facts['virtualization_type'] == "docker" or
+           ansible_facts['virtualization_type'] == "containerd" or
+           ansible_facts['virtualization_type'] == "container" or
+           ansible_facts['virtualization_type'] == "lxc" or
+           ansible_facts['virtualization_type'] == "VirtualPC")
         )
   block:
-    - name: Debug | ansible_virtualization_type
+    - name: Debug | ansible_facts['virtualization_type']
       ansible.builtin.debug:
-        var: ansible_virtualization_type
+        var: ansible_facts['virtualization_type']
         verbosity: 1
     - name: Review inotify sysctl settings for osquery
       ansible.posix.sysctl:
@@ -198,7 +198,7 @@
   ansible.builtin.import_tasks: selinux-end.yml
   when: >
     not is_container|bool
-    and ansible_os_family == "RedHat"
+    and ansible_facts['os_family'] == "RedHat"
 
 - name: Import reporting
   ansible.builtin.import_tasks: reporting.yml

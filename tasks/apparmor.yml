@@ -26,8 +26,8 @@
 
 - name: Runbindable
   when:
-    - ansible_distribution == 'Ubuntu'
-    - ansible_distribution_major_version | int >= 24
+    - ansible_facts['distribution'] == 'Ubuntu'
+    - ansible_facts['distribution_major_version'] | int >= 24
   block:
     - name: Check if /etc/apparmor.d/abstractions/passt exists
       ansible.builtin.stat:

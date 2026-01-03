@@ -37,7 +37,7 @@
 
 - name: Systemd
   when: >
-    ansible_service_mgr == "systemd" and
+    ansible_facts['service_mgr'] == "systemd" and
     not is_container|bool
   block:
     - name: Systemd | check service status
@@ -50,8 +50,8 @@
         var: systemctl.stdout_lines
 - name: Service
   when:
-    - ansible_service_mgr == "service"
-    - not (ansible_os_family == "RedHat" and ansible_distribution_major_version|int == 9)
+    - ansible_facts['service_mgr'] == "service"
+    - not (ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version']|int == 9)
   block:
     - name: Service | check service status  # noqa command-instead-of-module
       ansible.builtin.command: "service osqueryd status"

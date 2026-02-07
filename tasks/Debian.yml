@@ -49,6 +49,12 @@
       args:
         creates: /etc/apt/keyrings/osquery.asc
       environment: "{{ proxy_env | default(omit) }}"
+    - name: Ensure osquery APT key has right permissions
+      ansible.builtin.file:
+        path: /etc/apt/keyrings/osquery.asc
+        mode: '0644'
+        owner: root
+        group: root
 
 - name: Configure osquery APT repository
   become: yes

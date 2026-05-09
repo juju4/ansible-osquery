@@ -31,7 +31,7 @@
     name: osquery
     types: deb
     uris: "{{ _osquery_repository_uris }}"
-    suites: '{{ ansible_facts.distribution_release }}'
+    suites: deb
     components: main
     architectures: "{{ osquery_deb_arch }}"
     signed_by: https://pkg.osquery.io/deb/pubkey.gpg

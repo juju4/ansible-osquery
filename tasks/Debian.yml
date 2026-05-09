@@ -20,6 +20,7 @@
     name:
       - dirmngr
       - apt-transport-https
+      - python3-debian
     state: present
   register: pkg_result
   until: pkg_result is success

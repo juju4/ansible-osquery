@@ -32,7 +32,7 @@
     uris: "{{ _osquery_repository_uris }}"
     suites: '{{ ansible_facts.distribution_release }}'
     components: main
-    architectures: "{{ osquery_deb_arch }}"
+    architectures: deb
     signed_by: https://pkg.osquery.io/deb/pubkey.gpg
   tags:
     - osquery

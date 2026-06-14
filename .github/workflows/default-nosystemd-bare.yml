@@ -69,7 +69,7 @@ jobs:
           sudo ls -l /etc/apparmor.d/*firefox*
       - name: Apparmor workaround
         run: |
-          sudo rm /etc/apparmor.d/firefox /etc/apparmor.d/usr.bin.firefox
+          sudo rm /etc/apparmor.d/firefox /etc/apparmor.d/usr.bin.firefox /opt/microsoft/msedge/msedge
           sudo systemctl restart apparmor
         if: ${{ matrix.version == '24.04' }}
       - name: run test

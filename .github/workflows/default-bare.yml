@@ -84,7 +84,7 @@ jobs:
         continue-on-error: true
       - name: Apparmor workaround
         run: |
-          sudo rm /etc/apparmor.d/firefox /etc/apparmor.d/usr.bin.firefox
+          sudo rm /etc/apparmor.d/firefox /etc/apparmor.d/usr.bin.firefox /opt/microsoft/msedge/msedge
           sudo systemctl restart apparmor
         if: ${{ matrix.apparmor_fix }}
       - name: run test

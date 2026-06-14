@@ -66,10 +66,14 @@ jobs:
           env
           find -ls
           dpkg -l | grep apparmor
-          sudo ls -l /etc/apparmor.d/*firefox*
+          sudo ls -l /etc/apparmor.d/*firefox* /opt/microsoft/msedge/msedge
+          sudo apparmor_status
       - name: Apparmor workaround
         run: |
-          sudo rm /etc/apparmor.d/firefox /etc/apparmor.d/usr.bin.firefox /opt/microsoft/msedge/msedge
+          set -x
+          sudo rm /etc/apparmor.d/firefox /etc/apparmor.d/usr.bin.firefox /etc/apparmor.d/microsoft-edge-stable || true
+          sudo ls -l /etc/apparmor.d/firefox /etc/apparmor.d/usr.bin.firefox /opt/microsoft/msedge/msedge /etc/apparmor.d/microsoft-edge-* || true
+          sudo systemctl reload apparmor
           sudo systemctl restart apparmor
         if: ${{ matrix.version == '24.04' }}
       - name: run test

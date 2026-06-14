@@ -4,8 +4,14 @@ name: default-nosystemd-bare
 on:
   push:
   pull_request:
+  workflow_dispatch:
   schedule:  # run weekly, every monday 03:00
     - cron: '0 3 * * 1'
+  merge_group:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}
+  cancel-in-progress: true
 
 permissions: {}
 
@@ -13,7 +19,7 @@ jobs:
   build:
     permissions:
       contents: read
-    runs-on: ubuntu-${{ matrix.version }}
+    runs-on: ${{ matrix.distribution }}-${{ matrix.version }}
     continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
@@ -24,10 +30,12 @@ jobs:
             version: '24.04'
             suite: default
             experimental: false
+            apparmor_fix: true
           - distribution: ubuntu
             version: '22.04'
             suite: default
             experimental: false
+            apparmor_fix: false
     env:
       ANSIBLE_CALLBACKS_ENABLED: profile_tasks
       ANSIBLE_EXTRA_VARS: "-e osquery_systemd_restriction_enable=false"
@@ -42,6 +50,14 @@ jobs:
         uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6
         with:
           python-version: '3.x'
+      - name: Cache
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae  # v5.0.5
+        with:
+          path: |
+            /var/cache/apt/archives
+            /var/lib/apt
+            /var/_install
+          key: cache-ansible-osquery-${{ steps.get-date.outputs.date }}
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip
@@ -50,32 +66,35 @@ jobs:
           pip3 install ansible
           pip3 show ansible
           ls -l $HOME/.local/bin || true
-          ls -l /opt/hostedtoolcache/Python/3.9.1/x64/bin || true
-          echo "/opt/hostedtoolcache/Python/3.9.1/x64/bin" >> $GITHUB_PATH
           ansible --version
           cd $GITHUB_WORKSPACE/$ANSIBLE_ROLE
           [ -f molecule/$ANSIBLE_SUITE/requirements.yml ] && ansible-galaxy install -r molecule/$ANSIBLE_SUITE/requirements.yml
           [ -f get-dependencies.sh ] && sh -x get-dependencies.sh
-          { echo '[defaults]'; echo 'callbacks_enabled = profile_tasks, timer'; echo 'roles_path = ../'; echo 'ansible_python_interpreter: /usr/bin/python3'; } >> ansible.cfg
+          { echo '[defaults]'; echo 'callback_enabled = profile_tasks, timer'; echo 'roles_path = ../:/home/runner/.ansible/roles'; echo 'ansible_python_interpreter: /usr/bin/python3'; } >> ansible.cfg
       - name: Environment
         run: |
           set -x
           ansible --version
           ansible-config dump --only-changed -t all
+          ansible-galaxy collection list || true
+          ansible-galaxy role list || true
           pwd
           env
-          find -ls
+          find . -ls
           dpkg -l | grep apparmor
           sudo ls -l /etc/apparmor.d/*firefox* /opt/microsoft/msedge/msedge
           sudo apparmor_status
+      - name: Galaxy dependencies
+        run: |
+          cd $GITHUB_WORKSPACE/$ANSIBLE_ROLE && ansible-galaxy install --timeout 120 --verbose -r molecule/$ANSIBLE_SUITE/requirements.yml
+        continue-on-error: true
       - name: Apparmor workaround
         run: |
           set -x
           sudo rm /etc/apparmor.d/firefox /etc/apparmor.d/usr.bin.firefox /etc/apparmor.d/microsoft-edge-stable || true
-          sudo ls -l /etc/apparmor.d/firefox /etc/apparmor.d/usr.bin.firefox /opt/microsoft/msedge/msedge /etc/apparmor.d/microsoft-edge-* || true
           sudo systemctl reload apparmor
           sudo systemctl restart apparmor
-        if: ${{ matrix.version == '24.04' }}
+        if: ${{ matrix.apparmor_fix }}
       - name: run test
         run: |
           cd $GITHUB_WORKSPACE/$ANSIBLE_ROLE && ansible-playbook -i localhost, --connection=local --become -vvv molecule/$ANSIBLE_SUITE/converge.yml ${ANSIBLE_EXTRA_VARS}
@@ -114,10 +133,12 @@ jobs:
         continue-on-error: true
       - name: After script - systemd
         run: |
+          set -x
           systemctl -l --no-pager status osqueryd || true
           systemd-analyze security osqueryd || true
           systemctl --failed || true
           systemctl status osqueryd || true
+          cat /lib/systemd/system/osqueryd.service
         if: ${{ always() }}
         continue-on-error: true
       - name: After script - files
@@ -133,6 +154,13 @@ jobs:
           osqueryi --line "SELECT version from osquery_info;" || true
           osqueryi --config_dump --verbose || true
           osqueryi --config_check --verbose || true
+        if: ${{ always() }}
+        continue-on-error: true
+      - name: After script - osquery packs
+        run: |
+          set -x
+          cat /opt/osquery/share/osquery/packs/osquery-custom-pack.conf || true
+          cat /opt/osquery/share/osquery/packs/osquery-snapshots-pack.conf || true
         if: ${{ always() }}
         continue-on-error: true
       - name: After script - osquery ERROR/WARNING/INFO
@@ -162,10 +190,12 @@ jobs:
       - name: After script - apparmor
         run: |
           set -x
-          sudo grep -r "runbindable*/*" /etc/apparmor.d
-          sudo grep -r 'mount.*->' /etc/apparmor.d
-          sudo ls -l /etc/apparmor.d/usr.bin.osqueryd
-          sudo ls -l /etc/apparmor.d/*firefox*
+          sudo grep -r "runbindable*/*" /etc/apparmor.d || true
+          sudo grep -r 'mount.*->' /etc/apparmor.d || true
+          sudo ls -l /etc/apparmor.d/usr.bin.osqueryd || true
+          sudo ls -l /etc/apparmor.d/*firefox* || true
+          sudo ls -l /etc/apparmor.d/firefox /etc/apparmor.d/usr.bin.firefox /opt/microsoft/msedge/msedge /etc/apparmor.d/microsoft-edge-* || true
+          sudo find /etc/apparmor* -iname '*osquery*' || true
           sudo cat /etc/apparmor.d/usr.bin.osqueryd || true
           sudo cat /etc/apparmor.d/opt.osquery.bin.osqueryd || true
           dpkg -l | grep apparmor

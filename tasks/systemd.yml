@@ -21,15 +21,14 @@
         - Restart osquery
   rescue:
     - name: Import immutable
-      ansible.builtin.import_tasks: immutable.yml
+      ansible.builtin.include_tasks: immutable.yml
       vars:
-        target_dir: /etc/systemd/system
+        target_dir: "{{ item }}"
         state: pre
-    - name: Import immutable
-      ansible.builtin.import_tasks: immutable.yml
-      vars:
-        target_dir: /etc/systemd/system/osqueryd.service.d/override.conf
-        state: pre
+      loop:
+        - /etc/systemd/system
+        - /etc/systemd/system/osqueryd.service.d
+        - /etc/systemd/system/osqueryd.service.d/override.conf
     - name: Ensure override folder exists
       ansible.builtin.file:
         dest: /etc/systemd/system/osqueryd.service.d
@@ -45,15 +44,14 @@
         - Reload systemd
         - Restart osquery
     - name: Import immutable
-      ansible.builtin.import_tasks: immutable.yml
+      ansible.builtin.include_tasks: immutable.yml
       vars:
-        target_dir: /etc/systemd/system
+        target_dir: "{{ item }}"
         state: post
-    - name: Import immutable
-      ansible.builtin.import_tasks: immutable.yml
-      vars:
-        target_dir: /etc/systemd/system/osqueryd.service.d/override.conf
-        state: post
+      loop:
+        - /etc/systemd/system
+        - /etc/systemd/system/osqueryd.service.d
+        - /etc/systemd/system/osqueryd.service.d/override.conf
 
 - name: Systemd
   block:

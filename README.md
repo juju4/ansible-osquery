@@ -1,6 +1,7 @@
+# osquery
+
 [![AnsibleCI](https://github.com/juju4/ansible-osquery/actions/workflows/default.yml/badge.svg)](https://github.com/juju4/ansible-osquery/actions/workflows/default.yml)
 [![AnsibleCI](https://github.com/juju4/ansible-osquery/actions/workflows/default.yml/badge.svg?branch=devel)](https://github.com/juju4/ansible-osquery/actions/workflows/default.yml)
-# osquery
 
 Installs and configure osquery
 * file integrity monitoring

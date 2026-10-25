@@ -25,15 +25,15 @@ jobs:
       matrix:
         include:
           - distribution: ubuntu
-            version: '24.04'
+            version: '26.04'
             suite: default
             experimental: false
             apparmor_fix: true
           - distribution: ubuntu
-            version: '22.04'
+            version: '24.04'
             suite: default
             experimental: false
-            apparmor_fix: false
+            apparmor_fix: true
           - distribution: ubuntu
             version: '24.04'
             suite: default-schedule
